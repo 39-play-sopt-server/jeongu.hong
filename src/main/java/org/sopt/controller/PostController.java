@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostController {
-    private static final int INVALID_INDEX = -1;
-
     private final PostRepository postRepository;
     private final PostView postView;
 
@@ -63,6 +61,11 @@ public class PostController {
     }
 
     private void showPosts() {
+        if (postRepository.isEmpty()) {
+            postView.printMessage("게시글이 없습니다.");
+            return;
+        }
+
         List<String> titles = new ArrayList<>();
 
         for (Post post : postRepository.findAll()) {
@@ -73,9 +76,15 @@ public class PostController {
     }
 
     private void showPost() {
-        int index = readExistingIndex("조회할");
+        if (postRepository.isEmpty()) {
+            postView.printMessage("게시글이 없습니다.");
+            return;
+        }
 
-        if (index == INVALID_INDEX) {
+        int index = postView.readPostIndex("조회할");
+
+        if (!postRepository.exists(index)) {
+            postView.printMessage("존재하지 않는 게시글입니다.");
             return;
         }
 
@@ -85,16 +94,22 @@ public class PostController {
     }
 
     private void updatePost() {
-        int index = readExistingIndex("수정할");
-
-        if (index == INVALID_INDEX) {
+        if (postRepository.isEmpty()) {
+            postView.printMessage("게시글이 없습니다.");
             return;
         }
 
-        Post post = postRepository.findByIndex(index);
+        int index = postView.readPostIndex("수정할");
+
+        if (!postRepository.exists(index)) {
+            postView.printMessage("존재하지 않는 게시글입니다.");
+            return;
+        }
 
         String newTitle = postView.readNewTitle();
         String newContent = postView.readNewContent();
+
+        Post post = postRepository.findByIndex(index);
 
         post.updateTitle(newTitle);
         post.updateContent(newContent);
@@ -103,30 +118,20 @@ public class PostController {
     }
 
     private void deletePost() {
-        int index = readExistingIndex("삭제할");
+        if (postRepository.isEmpty()) {
+            postView.printMessage("게시글이 없습니다.");
+            return;
+        }
 
-        if (index == INVALID_INDEX) {
+        int index = postView.readPostIndex("삭제할");
+
+        if (!postRepository.exists(index)) {
+            postView.printMessage("존재하지 않는 게시글입니다.");
             return;
         }
 
         postRepository.deleteByIndex(index);
 
         postView.printMessage("게시글이 삭제되었습니다.");
-    }
-
-    private int readExistingIndex(String action) {
-        if (postRepository.isEmpty()) {
-            postView.printMessage("게시글이 없습니다.");
-            return INVALID_INDEX;
-        }
-
-        int index = postView.readPostIndex(action);
-
-        if (!postRepository.exists(index)) {
-            postView.printMessage("존재하지 않는 게시글입니다.");
-            return INVALID_INDEX;
-        }
-
-        return index;
     }
 }

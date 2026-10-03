@@ -47,11 +47,6 @@ public class PostView {
     public void printPostList(List<String> titles) {
         System.out.println("\n=== 게시글 목록 ===");
 
-        if (titles.isEmpty()) {
-            System.out.println("게시글이 없습니다.");
-            return;
-        }
-
         for (int i = 0; i < titles.size(); i++) {
             System.out.println((i + 1) + ". " + titles.get(i));
         }
