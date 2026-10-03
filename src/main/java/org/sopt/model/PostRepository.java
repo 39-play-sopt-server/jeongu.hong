@@ -3,31 +3,17 @@ package org.sopt.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostRepository {
+public interface PostRepository {
 
-    private final List<Post> posts = new ArrayList<>();
+    void save(Post post);
 
-    public void save(Post post) {
-        this.posts.add(post);
-    }
+    List<Post> findAll();
 
-    public List<Post> findAll() {
-        return this.posts;
-    }
+    Post findByIndex(int index);
 
-    public Post findByIndex(int index) {
-        return this.posts.get(index);
-    }
+    void deleteByIndex(int index);
 
-    public void deleteByIndex(int index) {
-        this.posts.remove(index);
-    }
+    boolean isEmpty();
 
-    public boolean isEmpty() {
-        return this.posts.isEmpty();
-    }
-
-    public boolean exists(int index) {
-        return index >= 0 && index < this.posts.size();
-    }
+    boolean exists(int index);
 }
