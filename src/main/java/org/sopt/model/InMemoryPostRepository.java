@@ -3,7 +3,7 @@ package org.sopt.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostRepositoryImpl implements PostRepository {
+public class InMemoryPostRepository implements PostRepository {
 
     private final List<Post> posts = new ArrayList<>();
 
