@@ -1,5 +1,7 @@
 package org.sopt.view;
 
+import org.sopt.model.Category;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,6 +31,18 @@ public class PostView {
         return scanner.nextLine();
     }
 
+    public int readCategoryNumber() {
+        System.out.println("카테고리를 선택하세요");
+        Category[] categories = Category.values();
+
+        for (int i = 0; i < categories.length; i++) {
+            System.out.println((i + 1) + ". " + categories[i]);
+        }
+        System.out.print("입력: ");
+
+        return Integer.parseInt(scanner.nextLine());
+    }
+
     public String readNewTitle() {
         System.out.print("새로운 제목: ");
         return scanner.nextLine();
@@ -52,8 +66,9 @@ public class PostView {
         }
     }
 
-    public void printPost(String title, String content) {
+    public void printPost(String title, String content, Category category) {
         System.out.println("\n=== 게시글 ===");
+        System.out.println("카테고리: " + category);
         System.out.println("제목: " + title);
         System.out.println("내용: " + content);
     }

@@ -1,12 +1,15 @@
 package org.sopt.model;
 
 public class Post {
+
     private String title;
     private String content;
+    private Category category;
 
-    public Post(String title, String content) {
+    public Post(String title, String content, Category category) {
         this.title = title;
         this.content = content;
+        this.category = category;
     }
 
     public String getTitle() {
@@ -15,6 +18,10 @@ public class Post {
 
     public String getContent() {
         return this.content;
+    }
+
+    public Category getCategory() {
+        return this.category;
     }
 
     public void updateTitle(String title) {

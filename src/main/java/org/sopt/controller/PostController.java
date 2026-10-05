@@ -1,5 +1,6 @@
 package org.sopt.controller;
 
+import org.sopt.model.Category;
 import org.sopt.model.Post;
 import org.sopt.model.PostRepository;
 import org.sopt.view.PostView;
@@ -60,7 +61,21 @@ public class PostController {
             return;
         }
 
-        postRepository.save(new Post(title, content));
+        int categoryNumber;
+
+        try {
+            categoryNumber = postView.readCategoryNumber();
+        } catch (NumberFormatException e) {
+            postView.printMessage("카테고리는 숫자로 입력해주세요.");
+            return;
+        }
+
+        if (!Category.exists(categoryNumber)) {
+            postView.printMessage("존재하지 않는 카테고리입니다.");
+            return;
+        }
+
+        postRepository.save(new Post(title, content, Category.from(categoryNumber)));
 
         postView.printMessage("게시글이 작성되었습니다.");
     }
@@ -95,7 +110,7 @@ public class PostController {
 
         Post post = postRepository.findByIndex(index);
 
-        postView.printPost(post.getTitle(), post.getContent());
+        postView.printPost(post.getTitle(), post.getContent(), post.getCategory());
     }
 
     private void updatePost() {
