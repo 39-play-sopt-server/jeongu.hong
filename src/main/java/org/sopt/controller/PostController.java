@@ -55,6 +55,11 @@ public class PostController {
         String title = postView.readTitle();
         String content = postView.readContent();
 
+        if (title.isEmpty() || content.isEmpty()) {
+            postView.printMessage("제목과 본문은 비어있을 수 없습니다.");
+            return;
+        }
+
         postRepository.save(new Post(title, content));
 
         postView.printMessage("게시글이 작성되었습니다.");
