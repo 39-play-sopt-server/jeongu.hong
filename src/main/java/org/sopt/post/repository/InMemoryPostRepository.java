@@ -1,4 +1,6 @@
-package org.sopt.model;
+package org.sopt.post.repository;
+
+import org.sopt.post.entity.Post;
 
 import java.util.ArrayList;
 import java.util.List;

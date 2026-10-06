@@ -1,6 +1,7 @@
-package org.sopt.view;
+package org.sopt.post.view;
 
-import org.sopt.model.Category;
+import org.sopt.post.dto.PostResponse;
+import org.sopt.post.entity.Category;
 
 import java.util.List;
 import java.util.Scanner;
@@ -58,19 +59,19 @@ public class PostView {
         return Integer.parseInt(scanner.nextLine()) - 1;
     }
 
-    public void printPostList(List<String> titles) {
+    public void printPostList(List<PostResponse> posts) {
         System.out.println("\n=== 게시글 목록 ===");
 
-        for (int i = 0; i < titles.size(); i++) {
-            System.out.println((i + 1) + ". " + titles.get(i));
+        for (int i = 0; i < posts.size(); i++) {
+            System.out.println((i + 1) + ". " + posts.get(i).title());
         }
     }
 
-    public void printPost(String title, String content, Category category) {
+    public void printPost(PostResponse post) {
         System.out.println("\n=== 게시글 ===");
-        System.out.println("카테고리: " + category);
-        System.out.println("제목: " + title);
-        System.out.println("내용: " + content);
+        System.out.println("카테고리: " + post.category());
+        System.out.println("제목: " + post.title());
+        System.out.println("내용: " + post.content());
     }
 
     public void printMessage(String message) {

@@ -1,7 +1,7 @@
 package org.sopt.config;
 
-import org.sopt.model.PostRepository;
-import org.sopt.model.InMemoryPostRepository;
+import org.sopt.post.repository.PostRepository;
+import org.sopt.post.repository.InMemoryPostRepository;
 
 public class PostConfig {
 

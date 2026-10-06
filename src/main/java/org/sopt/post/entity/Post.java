@@ -1,4 +1,4 @@
-package org.sopt.model;
+package org.sopt.post.entity;
 
 public class Post {
 
