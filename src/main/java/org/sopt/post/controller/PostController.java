@@ -19,6 +19,10 @@ public class PostController {
         postService.createPost(request);
     }
 
+    public List<String> getCategoryNames() {
+        return postService.getCategoryNames();
+    }
+
     public List<PostResponse> getPosts() {
         return postService.getPosts();
     }

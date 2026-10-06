@@ -25,7 +25,7 @@ public class Main {
                         controller.createPost(new PostCreateRequest(
                                 postView.readTitle(),
                                 postView.readContent(),
-                                postView.readCategoryNumber()));
+                                postView.readCategoryNumber(controller.getCategoryNames())));
                         postView.printMessage("게시글이 작성되었습니다.");
                         break;
 

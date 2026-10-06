@@ -1,7 +1,6 @@
 package org.sopt.post.view;
 
 import org.sopt.post.dto.PostResponse;
-import org.sopt.post.entity.Category;
 
 import java.util.List;
 import java.util.Scanner;
@@ -32,12 +31,11 @@ public class PostView {
         return scanner.nextLine();
     }
 
-    public int readCategoryNumber() {
+    public int readCategoryNumber(List<String> categoryNames) {
         System.out.println("카테고리를 선택하세요");
-        Category[] categories = Category.values();
 
-        for (int i = 0; i < categories.length; i++) {
-            System.out.println((i + 1) + ". " + categories[i]);
+        for (int i = 0; i < categoryNames.size(); i++) {
+            System.out.println((i + 1) + ". " + categoryNames.get(i));
         }
         System.out.print("입력: ");
 

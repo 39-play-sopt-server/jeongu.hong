@@ -9,6 +9,8 @@ import org.sopt.post.repository.PostRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PostService {
 
@@ -28,6 +30,12 @@ public class PostService {
         }
 
         postRepository.save(new Post(request.title(), request.content(), Category.from(request.categoryNumber())));
+    }
+
+    public List<String> getCategoryNames() {
+        return Stream.of(Category.values())
+                .map(Enum::name)
+                .toList();
     }
 
     public List<PostResponse> getPosts() {
