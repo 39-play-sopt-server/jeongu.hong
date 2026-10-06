@@ -1,6 +1,6 @@
 package org.sopt.post.service;
 
-import org.sopt.global.error.ErrorCode;
+import org.sopt.global.code.ErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;

@@ -2,7 +2,7 @@ package org.sopt;
 
 import org.sopt.config.PostConfig;
 import org.sopt.global.error.BusinessException;
-import org.sopt.global.error.ErrorCode;
+import org.sopt.global.response.ApiResponse;
 import org.sopt.post.controller.PostController;
 import org.sopt.post.view.PostView;
 
@@ -17,11 +17,11 @@ public class Main {
                 int command = postView.readCommand();
 
                 switch (command) {
-                    case 1 -> controller.createPost();
-                    case 2 -> controller.getPosts();
-                    case 3 -> controller.getPost();
-                    case 4 -> controller.updatePost();
-                    case 5 -> controller.deletePost();
+                    case 1 -> postView.printResult(controller.createPost());
+                    case 2 -> postView.printPostList(controller.getPosts());
+                    case 3 -> postView.printPost(controller.getPost());
+                    case 4 -> postView.printResult(controller.updatePost());
+                    case 5 -> postView.printResult(controller.deletePost());
                     case 6 -> {
                         postView.printMessage("프로그램을 종료합니다.");
                         return;
@@ -31,8 +31,7 @@ public class Main {
             } catch (NumberFormatException e) {
                 postView.printMessage("숫자로 입력해주세요.");
             } catch (BusinessException e) {
-                ErrorCode errorCode = e.getErrorCode();
-                postView.printError(errorCode.getCode(), errorCode.getMessage());
+                postView.printResult(ApiResponse.fail(e.getErrorCode()));
             }
         }
     }

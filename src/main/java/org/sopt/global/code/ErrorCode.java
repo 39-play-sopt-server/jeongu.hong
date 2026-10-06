@@ -1,6 +1,6 @@
-package org.sopt.global.error;
+package org.sopt.global.code;
 
-public enum ErrorCode {
+public enum ErrorCode implements ResponseCode {
 
     // Post Exception
     EMPTY_TITLE_OR_CONTENT("P001", "제목과 본문은 비어있을 수 없습니다."),

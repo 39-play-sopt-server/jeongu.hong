@@ -1,9 +1,14 @@
 package org.sopt.post.controller;
 
+import org.sopt.global.code.SuccessCode;
+import org.sopt.global.response.ApiResponse;
 import org.sopt.post.dto.PostCreateRequest;
+import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.service.PostService;
 import org.sopt.post.view.PostView;
+
+import java.util.List;
 
 public class PostController {
 
@@ -15,38 +20,38 @@ public class PostController {
         this.postView = postView;
     }
 
-    public void createPost() {
+    public ApiResponse<Void> createPost() {
         PostCreateRequest request = new PostCreateRequest(
                 postView.readTitle(),
                 postView.readContent(),
                 postView.readCategoryNumber(postService.getCategoryNames()));
 
         postService.createPost(request);
-        postView.printMessage("게시글이 작성되었습니다.");
+        return ApiResponse.success(SuccessCode.CREATED);
     }
 
-    public void getPosts() {
-        postView.printPostList(postService.getPosts());
+    public ApiResponse<List<PostResponse>> getPosts() {
+        return ApiResponse.success(SuccessCode.OK, postService.getPosts());
     }
 
-    public void getPost() {
+    public ApiResponse<PostResponse> getPost() {
         long id = postView.readPostId("조회할");
 
-        postView.printPost(postService.getPost(id));
+        return ApiResponse.success(SuccessCode.OK, postService.getPost(id));
     }
 
-    public void updatePost() {
+    public ApiResponse<Void> updatePost() {
         long id = postView.readPostId("수정할");
         PostUpdateRequest request = new PostUpdateRequest(postView.readNewTitle(), postView.readNewContent());
 
         postService.updatePost(id, request);
-        postView.printMessage("게시글이 수정되었습니다.");
+        return ApiResponse.success(SuccessCode.UPDATED);
     }
 
-    public void deletePost() {
+    public ApiResponse<Void> deletePost() {
         long id = postView.readPostId("삭제할");
 
         postService.deletePost(id);
-        postView.printMessage("게시글이 삭제되었습니다.");
+        return ApiResponse.success(SuccessCode.DELETED);
     }
 }

@@ -1,7 +1,7 @@
 package org.sopt.post.entity;
 
 import org.sopt.global.error.BusinessException;
-import org.sopt.global.error.ErrorCode;
+import org.sopt.global.code.ErrorCode;
 
 public class Post {
 
