@@ -37,7 +37,7 @@ public class PostView {
         for (int i = 0; i < categoryNames.size(); i++) {
             System.out.println((i + 1) + ". " + categoryNames.get(i));
         }
-        System.out.print("입력: ");
+        System.out.print("선택: ");
 
         return Integer.parseInt(scanner.nextLine());
     }
