@@ -3,44 +3,44 @@ package org.sopt.post.repository;
 import org.sopt.post.entity.Post;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class ListRepository implements PostRepository {
+public class HashMapPostRepository implements PostRepository {
 
-    private final List<Post> posts = new ArrayList<>();
+    private final Map<Long, Post> posts = new LinkedHashMap<>();
     private long sequence = 0L;
 
     @Override
     public void save(Post post) {
         post.assignId(++sequence);
-        this.posts.add(post);
+        posts.put(post.getId(), post);
     }
 
     @Override
     public List<Post> findAll() {
-        return this.posts;
+        return new ArrayList<>(posts.values());
     }
 
     @Override
     public Optional<Post> findById(long id) {
-        return this.posts.stream()
-                .filter(post -> post.getId() == id)
-                .findFirst();
+        return Optional.ofNullable(posts.get(id));
     }
 
     @Override
     public void deleteById(long id) {
-        this.posts.removeIf(post -> post.getId() == id);
+        posts.remove(id);
     }
 
     @Override
     public boolean isEmpty() {
-        return this.posts.isEmpty();
+        return posts.isEmpty();
     }
 
     @Override
     public boolean exists(long id) {
-        return findById(id).isPresent();
+        return posts.containsKey(id);
     }
 }
