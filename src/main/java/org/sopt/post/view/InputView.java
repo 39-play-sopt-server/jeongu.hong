@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class InputView {
+
+    private static final String INVALID_INPUT_MESSAGE = "잘못된 입력입니다. 다시 입력해주세요.";
+
     private final Scanner scanner = new Scanner(System.in);
 
     public int readCommand() {
@@ -16,7 +19,7 @@ public class InputView {
         System.out.println("6. 종료");
         System.out.print("선택: ");
 
-        return Integer.parseInt(scanner.nextLine());
+        return readNumber();
     }
 
     public String readTitle() {
@@ -37,7 +40,7 @@ public class InputView {
         }
         System.out.print("선택: ");
 
-        return Integer.parseInt(scanner.nextLine());
+        return readNumber();
     }
 
     public String readNewTitle() {
@@ -52,6 +55,46 @@ public class InputView {
 
     public long readPostId(String action) {
         System.out.print(action + " 게시글 번호: ");
-        return Long.parseLong(scanner.nextLine());
+        return readLongNumber();
+    }
+
+    private int readNumber() {
+        String input = scanner.nextLine();
+
+        while (!validateIntegerType(input)) {
+            input = scanner.nextLine();
+        }
+
+        return Integer.parseInt(input);
+    }
+
+    private boolean validateIntegerType(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println(INVALID_INPUT_MESSAGE);
+            return false;
+        }
+    }
+
+    private long readLongNumber() {
+        String input = scanner.nextLine();
+
+        while (!validateLongType(input)) {
+            input = scanner.nextLine();
+        }
+
+        return Long.parseLong(input);
+    }
+
+    private boolean validateLongType(String input) {
+        try {
+            Long.parseLong(input);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println(INVALID_INPUT_MESSAGE);
+            return false;
+        }
     }
 }
