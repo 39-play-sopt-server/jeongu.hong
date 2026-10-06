@@ -75,4 +75,8 @@ public class PostView {
     public void printMessage(String message) {
         System.out.println(message);
     }
+
+    public void printError(String errorCode, String message) {
+        System.out.printf("[%s] %s%n", errorCode, message);
+    }
 }

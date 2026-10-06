@@ -1,6 +1,8 @@
 package org.sopt;
 
 import org.sopt.config.PostConfig;
+import org.sopt.global.error.BusinessException;
+import org.sopt.global.error.ErrorCode;
 import org.sopt.post.controller.PostController;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostUpdateRequest;
@@ -58,8 +60,9 @@ public class Main {
                 }
             } catch (NumberFormatException e) {
                 postView.printMessage("숫자로 입력해주세요.");
-            } catch (IllegalArgumentException e) {
-                postView.printMessage(e.getMessage());
+            } catch (BusinessException e) {
+                ErrorCode errorCode = e.getErrorCode();
+                postView.printError(errorCode.getCode(), errorCode.getMessage());
             }
         }
     }

@@ -1,5 +1,7 @@
 package org.sopt.post.service;
 
+import org.sopt.global.error.ErrorCode;
+import org.sopt.global.error.BusinessException;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
@@ -9,7 +11,6 @@ import org.sopt.post.repository.PostRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PostService {
@@ -22,11 +23,11 @@ public class PostService {
 
     public void createPost(PostCreateRequest request) {
         if (request.title().isEmpty() || request.content().isEmpty()) {
-            throw new IllegalArgumentException("제목과 본문은 비어있을 수 없습니다.");
+            throw new BusinessException(ErrorCode.EMPTY_TITLE_OR_CONTENT);
         }
 
         if (!Category.exists(request.categoryNumber())) {
-            throw new IllegalArgumentException("존재하지 않는 카테고리입니다.");
+            throw new BusinessException(ErrorCode.CATEGORY_NOT_FOUND);
         }
 
         postRepository.save(new Post(request.title(), request.content(), Category.from(request.categoryNumber())));
@@ -71,7 +72,7 @@ public class PostService {
         validateNotEmpty();
 
         if (!postRepository.exists(index)) {
-            throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
+            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
         }
 
         return postRepository.findByIndex(index);
@@ -79,7 +80,7 @@ public class PostService {
 
     private void validateNotEmpty() {
         if (postRepository.isEmpty()) {
-            throw new IllegalArgumentException("게시글이 없습니다.");
+            throw new BusinessException(ErrorCode.POST_EMPTY);
         }
     }
 }
