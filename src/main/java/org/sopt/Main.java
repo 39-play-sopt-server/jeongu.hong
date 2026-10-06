@@ -6,17 +6,13 @@ import org.sopt.global.error.ErrorCode;
 import org.sopt.post.controller.PostController;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostUpdateRequest;
-import org.sopt.post.repository.PostRepository;
-import org.sopt.post.service.PostService;
 import org.sopt.post.view.PostView;
 
 public class Main {
 
     public static void main(String[] args) {
-        PostRepository postRepository = PostConfig.getRepository();
+        PostController controller = PostConfig.getController();
         PostView postView = new PostView();
-        PostService postService = new PostService(postRepository);
-        PostController controller = new PostController(postService);
 
         while (true) {
             try {
