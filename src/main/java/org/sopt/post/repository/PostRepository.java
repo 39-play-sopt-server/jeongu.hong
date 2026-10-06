@@ -3,6 +3,7 @@ package org.sopt.post.repository;
 import org.sopt.post.entity.Post;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository {
 
@@ -10,11 +11,11 @@ public interface PostRepository {
 
     List<Post> findAll();
 
-    Post findByIndex(int index);
+    Optional<Post> findById(long id);
 
-    void deleteByIndex(int index);
+    void deleteById(long id);
 
     boolean isEmpty();
 
-    boolean exists(int index);
+    boolean exists(long id);
 }

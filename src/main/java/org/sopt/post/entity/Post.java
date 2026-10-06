@@ -1,7 +1,11 @@
 package org.sopt.post.entity;
 
+import org.sopt.global.error.BusinessException;
+import org.sopt.global.error.ErrorCode;
+
 public class Post {
 
+    private Long id;
     private String title;
     private String content;
     private Category category;
@@ -24,11 +28,22 @@ public class Post {
         return this.category;
     }
 
+    public long getId() {
+        return this.id;
+    }
+
     public void updateTitle(String title) {
         this.title = title;
     }
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void assignId(Long id) {
+        if (this.id != null) {
+            throw new BusinessException(ErrorCode.ASSIGNED_POST);
+        }
+        this.id = id;
     }
 }

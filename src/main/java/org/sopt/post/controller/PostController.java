@@ -27,15 +27,15 @@ public class PostController {
         return postService.getPosts();
     }
 
-    public PostResponse getPost(int index) {
-        return postService.getPost(index);
+    public PostResponse getPost(long id) {
+        return postService.getPost(id);
     }
 
-    public void updatePost(int index, PostUpdateRequest request) {
-        postService.updatePost(index, request);
+    public void updatePost(long id, PostUpdateRequest request) {
+        postService.updatePost(id, request);
     }
 
-    public void deletePost(int index) {
-        postService.deletePost(index);
+    public void deletePost(long id) {
+        postService.deletePost(id);
     }
 }

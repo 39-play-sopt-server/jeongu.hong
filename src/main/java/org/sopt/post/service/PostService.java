@@ -51,31 +51,27 @@ public class PostService {
         return responses;
     }
 
-    public PostResponse getPost(int index) {
-        return PostResponse.from(findPost(index));
+    public PostResponse getPost(long id) {
+        return PostResponse.from(findPost(id));
     }
 
-    public void updatePost(int index, PostUpdateRequest request) {
-        Post post = findPost(index);
+    public void updatePost(long id, PostUpdateRequest request) {
+        Post post = findPost(id);
 
         post.updateTitle(request.title());
         post.updateContent(request.content());
     }
 
-    public void deletePost(int index) {
-        findPost(index);
+    public void deletePost(long id) {
+        findPost(id);
 
-        postRepository.deleteByIndex(index);
+        postRepository.deleteById(id);
     }
 
-    private Post findPost(int index) {
+    private Post findPost(long id) {
         validateNotEmpty();
-
-        if (!postRepository.exists(index)) {
-            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
-        }
-
-        return postRepository.findByIndex(index);
+        return postRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 
     private void validateNotEmpty() {

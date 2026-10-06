@@ -52,16 +52,16 @@ public class PostView {
         return scanner.nextLine();
     }
 
-    public int readPostIndex(String action) {
+    public long readPostId(String action) {
         System.out.print(action + " 게시글 번호: ");
-        return Integer.parseInt(scanner.nextLine()) - 1;
+        return Long.parseLong(scanner.nextLine());
     }
 
     public void printPostList(List<PostResponse> posts) {
         System.out.println("\n=== 게시글 목록 ===");
 
-        for (int i = 0; i < posts.size(); i++) {
-            System.out.println((i + 1) + ". " + posts.get(i).title());
+        for (PostResponse post : posts) {
+            System.out.println(post.id() + ". " + post.title());
         }
     }
 

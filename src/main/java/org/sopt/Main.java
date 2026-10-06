@@ -36,18 +36,18 @@ public class Main {
                         break;
 
                     case 3:
-                        postView.printPost(controller.getPost(postView.readPostIndex("조회할")));
+                        postView.printPost(controller.getPost(postView.readPostId("조회할")));
                         break;
 
                     case 4:
                         controller.updatePost(
-                                postView.readPostIndex("수정할"),
+                                postView.readPostId("수정할"),
                                 new PostUpdateRequest(postView.readNewTitle(), postView.readNewContent()));
                         postView.printMessage("게시글이 수정되었습니다.");
                         break;
 
                     case 5:
-                        controller.deletePost(postView.readPostIndex("삭제할"));
+                        controller.deletePost(postView.readPostId("삭제할"));
                         postView.printMessage("게시글이 삭제되었습니다.");
                         break;
 
