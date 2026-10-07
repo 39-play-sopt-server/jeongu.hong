@@ -11,6 +11,7 @@ public class Post {
     private Category category;
 
     public Post(String title, String content, Category category) {
+        validateNotBlank(title, content);
         this.title = title;
         this.content = content;
         this.category = category;
@@ -32,11 +33,9 @@ public class Post {
         return this.id;
     }
 
-    public void updateTitle(String title) {
+    public void update(String title, String content) {
+        validateNotBlank(title, content);
         this.title = title;
-    }
-
-    public void updateContent(String content) {
         this.content = content;
     }
 
@@ -45,5 +44,11 @@ public class Post {
             throw new BusinessException(ErrorCode.ASSIGNED_POST);
         }
         this.id = id;
+    }
+
+    private void validateNotBlank(String title, String content) {
+        if (title.isBlank() || content.isBlank()) {
+            throw new BusinessException(ErrorCode.EMPTY_TITLE_OR_CONTENT);
+        }
     }
 }

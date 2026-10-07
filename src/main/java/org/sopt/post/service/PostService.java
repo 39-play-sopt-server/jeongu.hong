@@ -22,10 +22,6 @@ public class PostService {
     }
 
     public void createPost(PostCreateRequest request) {
-        if (request.title().isEmpty() || request.content().isEmpty()) {
-            throw new BusinessException(ErrorCode.EMPTY_TITLE_OR_CONTENT);
-        }
-
         if (!Category.exists(request.categoryNumber())) {
             throw new BusinessException(ErrorCode.CATEGORY_NOT_FOUND);
         }
@@ -58,8 +54,7 @@ public class PostService {
     public void updatePost(long id, PostUpdateRequest request) {
         Post post = findPost(id);
 
-        post.updateTitle(request.title());
-        post.updateContent(request.content());
+        post.update(request.title(), request.content());
     }
 
     public void deletePost(long id) {
