@@ -1,6 +1,8 @@
 package org.sopt.post.repository;
 
 import org.sopt.post.entity.Post;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
+@Primary
 public class HashMapPostRepository implements PostRepository {
 
     private final Map<Long, Post> posts = new LinkedHashMap<>();
