@@ -7,7 +7,9 @@ public enum ErrorCode implements ResponseCode {
     CATEGORY_NOT_FOUND("P002", "존재하지 않는 카테고리입니다."),
     POST_NOT_FOUND("P003", "존재하지 않는 게시글입니다."),
     POST_EMPTY("P004", "게시글이 없습니다."),
-    ASSIGNED_POST("P005", "이미 id가 할당된 게시물입니다.");
+    ASSIGNED_POST("P005", "이미 id가 할당된 게시물입니다."),
+
+    INTERNAL_ERROR("500", "서버 내부 오류입니다.");
 
     private final String code;
     private final String message;

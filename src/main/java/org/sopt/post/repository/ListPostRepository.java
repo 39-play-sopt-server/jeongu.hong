@@ -1,11 +1,13 @@
 package org.sopt.post.repository;
 
 import org.sopt.post.entity.Post;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class ListPostRepository implements PostRepository {
 
     private final List<Post> posts = new ArrayList<>();

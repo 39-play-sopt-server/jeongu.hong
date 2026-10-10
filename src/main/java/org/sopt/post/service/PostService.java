@@ -8,11 +8,13 @@ import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.entity.Category;
 import org.sopt.post.entity.Post;
 import org.sopt.post.repository.PostRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Service
 public class PostService {
 
     private final PostRepository postRepository;
@@ -27,12 +29,6 @@ public class PostService {
         }
 
         postRepository.save(new Post(request.title(), request.content(), Category.from(request.categoryNumber())));
-    }
-
-    public List<String> getCategoryNames() {
-        return Stream.of(Category.values())
-                .map(Enum::name)
-                .toList();
     }
 
     public List<PostResponse> getPosts() {
