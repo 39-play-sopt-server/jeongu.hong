@@ -42,7 +42,7 @@ public interface PostApi {
     @Operation(summary = "게시물 단건 조회 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003) / 게시글이 없습니다.(P004)")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
     })
     @GetMapping(path = "/{postId}")
     ResponseEntity<BaseResponse<PostResponse>> getPost(@PathVariable Long postId);
@@ -51,7 +51,7 @@ public interface PostApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003) / 게시글이 없습니다.(P004)")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
     })
     @PutMapping(path = "/{postId}")
     ResponseEntity<BaseResponse<Void>> updatePost(@PathVariable Long postId, @RequestBody @Valid PostUpdateRequest request);
@@ -59,7 +59,7 @@ public interface PostApi {
     @Operation(summary = "게시물 삭제 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003) / 게시글이 없습니다.(P004)")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
     })
     @DeleteMapping(path = "/{postId}")
     ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long postId);

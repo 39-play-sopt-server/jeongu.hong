@@ -59,15 +59,8 @@ public class PostService {
     }
 
     private Post findPost(long id) {
-        validateNotEmpty();
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
-    }
-
-    private void validateNotEmpty() {
-        if (postRepository.isEmpty()) {
-            throw new BusinessException(ErrorCode.POST_EMPTY);
-        }
     }
 
     private void validatePageAndSize(int page, int size) {

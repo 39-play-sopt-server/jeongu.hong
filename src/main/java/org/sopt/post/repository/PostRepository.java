@@ -16,7 +16,5 @@ public interface PostRepository {
 
     void deleteById(long id);
 
-    boolean isEmpty();
-
     boolean exists(long id);
 }

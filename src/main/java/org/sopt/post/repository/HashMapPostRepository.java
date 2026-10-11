@@ -42,11 +42,6 @@ public class HashMapPostRepository implements PostRepository {
     }
 
     @Override
-    public boolean isEmpty() {
-        return posts.isEmpty();
-    }
-
-    @Override
     public boolean exists(long id) {
         return posts.containsKey(id);
     }
