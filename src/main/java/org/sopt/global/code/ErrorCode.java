@@ -12,6 +12,7 @@ public enum ErrorCode {
     ASSIGNED_POST(HttpStatus.INTERNAL_SERVER_ERROR, "P005", "이미 id가 할당된 게시물입니다."),
     INVALID_PAGE_OR_SIZE(HttpStatus.BAD_REQUEST, "P006", "잘못된 page, size 크기 요청입니다."),
 
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "400", "잘못된 요청 값입니다."),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "서버 내부 오류입니다.");
 
     private final HttpStatus httpStatus;
