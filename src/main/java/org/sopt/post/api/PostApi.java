@@ -28,10 +28,13 @@ public interface PostApi {
     @Operation(summary = "게시물 목록 조회 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "게시글이 없습니다.(P004)")
+            @ApiResponse(responseCode = "400", description = "잘못된 page, size 크기 요청입니다. (P006)")
     })
     @GetMapping
-    ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(@RequestParam(name = "page", defaultValue = "1") int page);
+    ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    );
 
     @Operation(summary = "게시물 단건 조회 API")
     @ApiResponses({

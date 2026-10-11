@@ -28,8 +28,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(int page) {
-        return BaseResponse.success(SuccessCode.POST_FETCHED, postService.getPosts());
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(int page, int size) {
+        return BaseResponse.success(SuccessCode.POST_FETCHED, postService.getPosts(page, size));
     }
 
     @Override

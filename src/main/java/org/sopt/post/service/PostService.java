@@ -31,12 +31,12 @@ public class PostService {
         postRepository.save(new Post(request.title(), request.content(), Category.from(request.categoryNumber())));
     }
 
-    public List<PostResponse> getPosts() {
-        validateNotEmpty();
+    public List<PostResponse> getPosts(int page, int size) {
+        validatePageAndSize(page, size);
 
         List<PostResponse> responses = new ArrayList<>();
 
-        for (Post post : postRepository.findAll()) {
+        for (Post post : postRepository.findAll(page, size)) {
             responses.add(PostResponse.from(post));
         }
 
@@ -72,6 +72,12 @@ public class PostService {
     private void validateNotEmpty() {
         if (postRepository.isEmpty()) {
             throw new BusinessException(ErrorCode.POST_EMPTY);
+        }
+    }
+
+    private void validatePageAndSize(int page, int size) {
+        if (page < 1 || size < 1) {
+            throw new BusinessException(ErrorCode.INVALID_PAGE_OR_SIZE);
         }
     }
 }

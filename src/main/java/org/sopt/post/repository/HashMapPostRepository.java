@@ -1,7 +1,6 @@
 package org.sopt.post.repository;
 
 import org.sopt.post.entity.Post;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@Primary
 public class HashMapPostRepository implements PostRepository {
 
     private final Map<Long, Post> posts = new LinkedHashMap<>();
@@ -24,8 +22,13 @@ public class HashMapPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return new ArrayList<>(posts.values());
+    public List<Post> findAll(int page, int size) {
+        List<Post> postList = new ArrayList<>(posts.values());
+        long offset = (long) (page - 1) * size;
+        return postList.stream()
+                .skip(offset)
+                .limit(size)
+                .toList();
     }
 
     @Override

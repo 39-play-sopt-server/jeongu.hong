@@ -9,7 +9,7 @@ public interface PostRepository {
 
     void save(Post post);
 
-    List<Post> findAll();
+    List<Post> findAll(int page, int size);
 
     Optional<Post> findById(long id);
 
