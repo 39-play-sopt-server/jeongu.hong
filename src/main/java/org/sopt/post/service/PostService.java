@@ -10,7 +10,6 @@ import org.sopt.post.entity.Post;
 import org.sopt.post.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,13 +28,9 @@ public class PostService {
     public List<PostResponse> getPosts(Category category, int page, int size) {
         validatePageAndSize(page, size);
 
-        List<PostResponse> responses = new ArrayList<>();
-
-        for (Post post : postRepository.findAll(category, page, size)) {
-            responses.add(PostResponse.from(post));
-        }
-
-        return responses;
+        return postRepository.findAll(category, page, size).stream()
+                .map(PostResponse::from)
+                .toList();
     }
 
     public PostResponse getPost(long id) {
