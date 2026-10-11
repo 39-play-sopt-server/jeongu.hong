@@ -58,7 +58,7 @@ public class Post {
     }
 
     private void validateNotBlank(String title, String content) {
-        if (title.isBlank() || content.isBlank()) {
+        if (title == null || content == null || title.isBlank() || content.isBlank()) {
             throw new BusinessException(ErrorCode.EMPTY_TITLE_OR_CONTENT);
         }
     }

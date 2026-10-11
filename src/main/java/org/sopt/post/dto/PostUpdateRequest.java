@@ -1,4 +1,10 @@
 package org.sopt.post.dto;
 
-public record PostUpdateRequest(String title, String content) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record PostUpdateRequest(
+        @NotNull @NotBlank String title,
+        @NotNull @NotBlank String content
+) {
 }

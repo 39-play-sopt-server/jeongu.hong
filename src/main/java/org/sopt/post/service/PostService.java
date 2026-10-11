@@ -23,10 +23,6 @@ public class PostService {
     }
 
     public void createPost(PostCreateRequest request) {
-        if (request.category() == null) {
-            throw new BusinessException(ErrorCode.CATEGORY_NOT_FOUND);
-        }
-
         postRepository.save(new Post(request.title(), request.content(), request.category()));
     }
 
