@@ -3,12 +3,15 @@ package org.sopt.post.entity;
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.code.ErrorCode;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Post {
 
     private Long id;
     private String title;
     private String content;
-    private Category category;
+    private final AtomicLong viewCount = new AtomicLong();
+    private final Category category;
 
     public Post(String title, String content, Category category) {
         validateNotBlank(title, content);
@@ -33,6 +36,10 @@ public class Post {
         return this.id;
     }
 
+    public long getViewCount() {
+        return this.viewCount.get();
+    }
+
     public void update(String title, String content) {
         validateNotBlank(title, content);
         this.title = title;
@@ -44,6 +51,10 @@ public class Post {
             throw new BusinessException(ErrorCode.ASSIGNED_POST);
         }
         this.id = id;
+    }
+
+    public void increaseViewCount() {
+        viewCount.incrementAndGet();
     }
 
     private void validateNotBlank(String title, String content) {

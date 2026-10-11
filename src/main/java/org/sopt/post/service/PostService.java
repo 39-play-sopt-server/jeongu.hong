@@ -44,7 +44,11 @@ public class PostService {
     }
 
     public PostResponse getPost(long id) {
-        return PostResponse.from(findPost(id));
+        Post post = findPost(id);
+
+        post.increaseViewCount();
+
+        return PostResponse.from(post);
     }
 
     public void updatePost(long id, PostUpdateRequest request) {
