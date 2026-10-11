@@ -6,7 +6,6 @@ import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.service.PostService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,27 +26,21 @@ public class PostController {
            @RequestBody PostCreateRequest request
     ) {
         postService.createPost(request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.success(SuccessCode.CREATED));
+        return ApiResponse.success(SuccessCode.POST_CREATED);
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(
             @RequestParam(name = "page", defaultValue = "1") int page
     ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResponse.success(SuccessCode.OK, postService.getPosts()));
+        return ApiResponse.success(SuccessCode.POST_FETCHED, postService.getPosts());
     }
 
     @GetMapping(path = "/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> getPost(
             @PathVariable Long postId
     ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResponse.success(SuccessCode.OK, postService.getPost(postId)));
+        return ApiResponse.success(SuccessCode.POST_FETCHED, postService.getPost(postId));
     }
 
     @PutMapping(path = "/{postId}")
@@ -55,9 +48,7 @@ public class PostController {
             @PathVariable Long postId,
             @RequestBody PostUpdateRequest request) {
         postService.updatePost(postId, request);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResponse.success(SuccessCode.UPDATED));
+        return ApiResponse.success(SuccessCode.POST_UPDATED);
     }
 
     @DeleteMapping(path = "/{postId}")
@@ -65,8 +56,6 @@ public class PostController {
             @PathVariable Long postId
     ) {
         postService.deletePost(postId);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResponse.success(SuccessCode.DELETED));
+        return ApiResponse.success(SuccessCode.POST_DELETED);
     }
 }

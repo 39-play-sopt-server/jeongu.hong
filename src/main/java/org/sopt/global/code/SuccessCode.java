@@ -1,26 +1,31 @@
 package org.sopt.global.code;
 
-public enum SuccessCode implements ResponseCode {
+import org.springframework.http.HttpStatus;
 
-    OK("200", "게시글 조회 성공"),
-    CREATED("201", "정상적으로 생성되었습니다."),
-    UPDATED("200", "게시글 수정 성공"),
-    DELETED("200", "게시글 삭제 성공");
+public enum SuccessCode {
 
-    private final String code;
+    // Post
+    POST_CREATED(HttpStatus.CREATED, "게시글 생성 성공"),
+    POST_FETCHED(HttpStatus.OK, "게시글 조회 성공"),
+    POST_UPDATED(HttpStatus.OK, "게시글 수정 성공"),
+    POST_DELETED(HttpStatus.OK, "게시글 삭제 성공");
+
+    private final HttpStatus httpStatus;
     private final String message;
 
-    SuccessCode(String code, String message) {
-        this.code = code;
+    SuccessCode(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
         this.message = message;
     }
 
-    @Override
-    public String getCode() {
-        return this.code;
+    public HttpStatus getHttpStatus() {
+        return this.httpStatus;
     }
 
-    @Override
+    public String getCode() {
+        return String.valueOf(this.httpStatus.value());
+    }
+
     public String getMessage() {
         return this.message;
     }
