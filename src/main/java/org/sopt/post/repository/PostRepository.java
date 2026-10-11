@@ -15,6 +15,4 @@ public interface PostRepository {
     Optional<Post> findById(long id);
 
     void deleteById(long id);
-
-    boolean exists(long id);
 }

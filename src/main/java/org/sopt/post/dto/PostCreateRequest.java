@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import org.sopt.post.entity.Category;
 
 public record PostCreateRequest(
-        @NotNull @NotBlank String title,
-        @NotNull @NotBlank String content,
+        @NotBlank String title,
+        @NotBlank String content,
         @NotNull Category category
 ) {
 }

@@ -40,9 +40,4 @@ public class HashMapPostRepository implements PostRepository {
     public void deleteById(long id) {
         posts.remove(id);
     }
-
-    @Override
-    public boolean exists(long id) {
-        return posts.containsKey(id);
-    }
 }
