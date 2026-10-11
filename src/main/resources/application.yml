@@ -10,3 +10,9 @@ springdoc:
     tags-sorter: alpha
     operations-sorter: method
     display-request-duration: true
+
+spring:
+  jackson:
+    datatype:
+      enum:
+        fail-on-numbers-for-enums: true

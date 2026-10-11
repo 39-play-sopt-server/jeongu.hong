@@ -6,6 +6,7 @@ import org.sopt.post.api.PostApi;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
+import org.sopt.post.entity.Category;
 import org.sopt.post.service.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(int page, int size) {
-        return BaseResponse.success(SuccessCode.POST_FETCHED, postService.getPosts(page, size));
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(Category category, int page, int size) {
+        return BaseResponse.success(SuccessCode.POST_FETCHED, postService.getPosts(category, page, size));
     }
 
     @Override

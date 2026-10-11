@@ -1,9 +1,9 @@
 package org.sopt.post.repository;
 
+import org.sopt.post.entity.Category;
 import org.sopt.post.entity.Post;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +22,10 @@ public class HashMapPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll(int page, int size) {
-        List<Post> postList = new ArrayList<>(posts.values());
+    public List<Post> findAll(Category category, int page, int size) {
         long offset = (long) (page - 1) * size;
-        return postList.stream()
+        return posts.values().stream()
+                .filter(post -> category == null || post.getCategory() == category)
                 .skip(offset)
                 .limit(size)
                 .toList();

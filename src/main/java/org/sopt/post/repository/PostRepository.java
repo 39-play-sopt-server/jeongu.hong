@@ -1,5 +1,6 @@
 package org.sopt.post.repository;
 
+import org.sopt.post.entity.Category;
 import org.sopt.post.entity.Post;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface PostRepository {
 
     void save(Post post);
 
-    List<Post> findAll(int page, int size);
+    List<Post> findAll(Category category, int page, int size);
 
     Optional<Post> findById(long id);
 

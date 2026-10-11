@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class PostService {
@@ -24,19 +23,19 @@ public class PostService {
     }
 
     public void createPost(PostCreateRequest request) {
-        if (!Category.exists(request.categoryNumber())) {
+        if (request.category() == null) {
             throw new BusinessException(ErrorCode.CATEGORY_NOT_FOUND);
         }
 
-        postRepository.save(new Post(request.title(), request.content(), Category.from(request.categoryNumber())));
+        postRepository.save(new Post(request.title(), request.content(), request.category()));
     }
 
-    public List<PostResponse> getPosts(int page, int size) {
+    public List<PostResponse> getPosts(Category category, int page, int size) {
         validatePageAndSize(page, size);
 
         List<PostResponse> responses = new ArrayList<>();
 
-        for (Post post : postRepository.findAll(page, size)) {
+        for (Post post : postRepository.findAll(category, page, size)) {
             responses.add(PostResponse.from(post));
         }
 
