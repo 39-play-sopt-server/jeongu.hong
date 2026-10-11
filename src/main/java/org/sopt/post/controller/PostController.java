@@ -6,6 +6,8 @@ import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.service.PostService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,40 +23,50 @@ public class PostController {
     }
 
     @PostMapping
-    public ApiResponse<Void> createPost(
+    public ResponseEntity<ApiResponse<Void>> createPost(
            @RequestBody PostCreateRequest request
     ) {
         postService.createPost(request);
-        return ApiResponse.success(SuccessCode.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(SuccessCode.CREATED));
     }
 
     @GetMapping
-    public ApiResponse<List<PostResponse>> getPosts(
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(
             @RequestParam(name = "page", defaultValue = "1") int page
     ) {
-        return ApiResponse.success(SuccessCode.OK, postService.getPosts());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessCode.OK, postService.getPosts()));
     }
 
     @GetMapping(path = "/{postId}")
-    public ApiResponse<PostResponse> getPost(
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(
             @PathVariable Long postId
     ) {
-        return ApiResponse.success(SuccessCode.OK, postService.getPost(postId));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessCode.OK, postService.getPost(postId)));
     }
 
     @PutMapping(path = "/{postId}")
-    public ApiResponse<Void> updatePost(
+    public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable Long postId,
             @RequestBody PostUpdateRequest request) {
         postService.updatePost(postId, request);
-        return ApiResponse.success(SuccessCode.UPDATED);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessCode.UPDATED));
     }
 
     @DeleteMapping(path = "/{postId}")
-    public ApiResponse<Void> deletePost(
+    public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable Long postId
     ) {
         postService.deletePost(postId);
-        return ApiResponse.success(SuccessCode.DELETED);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessCode.DELETED));
     }
 }
