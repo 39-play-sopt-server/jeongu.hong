@@ -20,7 +20,7 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("SOPT API") // API의 제목
-                .description("Let's SOPT 세미나를 위한 API") // API에 대한 설명
+                .description("PLAY SOPT 세미나를 위한 API") // API에 대한 설명
                 .version("1.0.0"); // API의 버전
     }
 }
