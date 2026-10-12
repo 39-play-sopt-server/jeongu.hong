@@ -15,6 +15,7 @@ public class Post {
 
     public Post(String title, String content, Category category) {
         validateNotBlank(title, content);
+        validateCategory(category);
         this.title = title;
         this.content = content;
         this.category = category;
@@ -60,6 +61,12 @@ public class Post {
     private void validateNotBlank(String title, String content) {
         if (title == null || content == null || title.isBlank() || content.isBlank()) {
             throw new BusinessException(PostErrorCode.EMPTY_TITLE_OR_CONTENT);
+        }
+    }
+
+    private void validateCategory(Category category) {
+        if (category == null) {
+            throw new BusinessException(PostErrorCode.EMPTY_CATEGORY);
         }
     }
 }
