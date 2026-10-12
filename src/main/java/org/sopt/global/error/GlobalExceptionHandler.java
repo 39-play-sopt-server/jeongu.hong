@@ -1,6 +1,6 @@
 package org.sopt.global.error;
 
-import org.sopt.global.code.ErrorCode;
+import org.sopt.global.code.GlobalErrorCode;
 import org.sopt.global.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,13 +27,13 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<BaseResponse<Void>> handleInvalidRequestException(Exception e) {
 
-        return BaseResponse.fail(ErrorCode.INVALID_REQUEST);
+        return BaseResponse.fail(GlobalErrorCode.INVALID_REQUEST);
     }
 
     // 그 외 모든 예외
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Void>> handleException(Exception e) {
 
-        return BaseResponse.fail(ErrorCode.INTERNAL_ERROR);
+        return BaseResponse.fail(GlobalErrorCode.INTERNAL_ERROR);
     }
 }

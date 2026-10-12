@@ -1,7 +1,7 @@
 package org.sopt.post.domain;
 
 import org.sopt.global.error.BusinessException;
-import org.sopt.global.code.ErrorCode;
+import org.sopt.post.code.PostErrorCode;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -21,23 +21,23 @@ public class Post {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public String getContent() {
-        return this.content;
+        return content;
     }
 
     public Category getCategory() {
-        return this.category;
+        return category;
     }
 
     public long getId() {
-        return this.id;
+        return id;
     }
 
     public long getViewCount() {
-        return this.viewCount.get();
+        return viewCount.get();
     }
 
     public void update(String title, String content) {
@@ -48,7 +48,7 @@ public class Post {
 
     public void assignId(Long id) {
         if (this.id != null) {
-            throw new BusinessException(ErrorCode.ASSIGNED_POST);
+            throw new BusinessException(PostErrorCode.ASSIGNED_POST);
         }
         this.id = id;
     }
@@ -59,7 +59,7 @@ public class Post {
 
     private void validateNotBlank(String title, String content) {
         if (title == null || content == null || title.isBlank() || content.isBlank()) {
-            throw new BusinessException(ErrorCode.EMPTY_TITLE_OR_CONTENT);
+            throw new BusinessException(PostErrorCode.EMPTY_TITLE_OR_CONTENT);
         }
     }
 }

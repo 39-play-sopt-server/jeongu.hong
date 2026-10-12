@@ -1,7 +1,7 @@
 package org.sopt.post.service;
 
-import org.sopt.global.code.ErrorCode;
 import org.sopt.global.error.BusinessException;
+import org.sopt.post.code.PostErrorCode;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
@@ -55,12 +55,12 @@ public class PostService {
 
     private Post findPost(long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
     }
 
     private void validatePageAndSize(int page, int size) {
         if (page < 1 || size < 1) {
-            throw new BusinessException(ErrorCode.INVALID_PAGE_OR_SIZE);
+            throw new BusinessException(PostErrorCode.INVALID_PAGE_OR_SIZE);
         }
     }
 }
