@@ -1,7 +1,7 @@
 package org.sopt.global.error;
 
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopt.global.code.ErrorCode;
 import org.sopt.global.code.GlobalErrorCode;
 import org.sopt.global.response.BaseResponse;
@@ -21,10 +21,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     // 커스텀 예외 처리
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<BaseResponse<Void>> handleServiceException(BusinessException e) {
-
+        ErrorCode errorCode = e.getErrorCode();
+        if (errorCode.getHttpStatus().is5xxServerError()) {
+            log.error("[{}] {}", errorCode.getCode(), errorCode.getMessage(), e);
+        } else {
+            log.warn("[{}] {}", errorCode.getCode(), errorCode.getMessage());
+        }
         return BaseResponse.fail(e.getErrorCode());
     }
 
@@ -36,6 +43,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, String> errors = new LinkedHashMap<>();
         e.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.putIfAbsent(error.getField(), error.getDefaultMessage()));
+        log.warn("검증 실패: {}", errors);
 
         ErrorCode errorCode = GlobalErrorCode.INVALID_REQUEST;
         return ResponseEntity
@@ -52,6 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = (status == HttpStatus.BAD_REQUEST)
                 ? GlobalErrorCode.INVALID_REQUEST.getMessage()
                 : status.getReasonPhrase();
+        log.warn("[{}] {}", status.value(), e.getMessage());
 
         return ResponseEntity
                 .status(status)
@@ -62,7 +71,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     // 그 외 모든 예외
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Void>> handleException(Exception e) {
-
+        log.error("예상치 못한 예외", e);
         return BaseResponse.fail(GlobalErrorCode.INTERNAL_ERROR);
     }
 }
