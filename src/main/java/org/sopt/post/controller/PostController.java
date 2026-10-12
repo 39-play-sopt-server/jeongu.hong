@@ -6,7 +6,7 @@ import org.sopt.post.api.PostApi;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
-import org.sopt.post.entity.Category;
+import org.sopt.post.domain.Category;
 import org.sopt.post.facade.PostLockFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -3,7 +3,7 @@ package org.sopt.post.facade;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
-import org.sopt.post.entity.Category;
+import org.sopt.post.domain.Category;
 import org.sopt.post.service.PostService;
 import org.springframework.stereotype.Component;
 

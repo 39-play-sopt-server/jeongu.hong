@@ -1,4 +1,4 @@
-package org.sopt.post.entity;
+package org.sopt.post.domain;
 
 public enum Category {
     PLAY,

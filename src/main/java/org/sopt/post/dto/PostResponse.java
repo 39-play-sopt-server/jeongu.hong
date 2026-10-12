@@ -1,6 +1,6 @@
 package org.sopt.post.dto;
 
-import org.sopt.post.entity.Post;
+import org.sopt.post.domain.Post;
 
 public record PostResponse(long id, String title, String content, String category, long viewCount) {
 

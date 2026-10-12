@@ -1,4 +1,4 @@
-package org.sopt.post.entity;
+package org.sopt.post.domain;
 
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.code.ErrorCode;

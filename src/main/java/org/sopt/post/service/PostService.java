@@ -5,8 +5,8 @@ import org.sopt.global.error.BusinessException;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
-import org.sopt.post.entity.Category;
-import org.sopt.post.entity.Post;
+import org.sopt.post.domain.Category;
+import org.sopt.post.domain.Post;
 import org.sopt.post.repository.PostRepository;
 import org.springframework.stereotype.Service;
 

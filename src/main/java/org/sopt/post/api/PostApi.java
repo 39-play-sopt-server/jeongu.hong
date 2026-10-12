@@ -9,7 +9,7 @@ import org.sopt.global.response.BaseResponse;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
-import org.sopt.post.entity.Category;
+import org.sopt.post.domain.Category;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

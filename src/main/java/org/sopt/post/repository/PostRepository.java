@@ -1,7 +1,7 @@
 package org.sopt.post.repository;
 
-import org.sopt.post.entity.Category;
-import org.sopt.post.entity.Post;
+import org.sopt.post.domain.Category;
+import org.sopt.post.domain.Post;
 
 import java.util.List;
 import java.util.Optional;
