@@ -23,6 +23,9 @@ dependencies {
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
+
+    // Data
+    implementation 'org.springframework.boot:spring-boot-data-commons'
 }
 
 test {

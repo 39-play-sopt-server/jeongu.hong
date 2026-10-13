@@ -2,6 +2,7 @@ package org.sopt.post.repository;
 
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedHashMap;
@@ -22,12 +23,11 @@ public class HashMapPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll(Category category, int page, int size) {
-        long offset = (long) (page - 1) * size;
+    public List<Post> findAll(Category category, Pageable pageable) {
         return posts.values().stream()
                 .filter(post -> category == null || post.getCategory() == category)
-                .skip(offset)
-                .limit(size)
+                .skip(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .toList();
     }
 

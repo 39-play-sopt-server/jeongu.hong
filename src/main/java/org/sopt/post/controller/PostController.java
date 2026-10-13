@@ -8,6 +8,7 @@ import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.domain.Category;
 import org.sopt.post.facade.PostLockFacade;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(Category category, int page, int size) {
-        return BaseResponse.success(PostSuccessCode.POST_FETCHED, postLockFacade.getPosts(category, page, size));
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(Category category, Pageable pageable) {
+        return BaseResponse.success(PostSuccessCode.POST_FETCHED, postLockFacade.getPosts(category, pageable));
     }
 
     @Override

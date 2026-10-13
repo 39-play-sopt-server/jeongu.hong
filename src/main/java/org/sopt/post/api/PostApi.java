@@ -10,6 +10,8 @@ import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.domain.Category;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,14 +31,12 @@ public interface PostApi {
 
     @Operation(summary = "게시물 목록 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 page, size 크기 요청입니다. (P006) / 잘못된 요청 값입니다.(400)")
+            @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
     })
     @GetMapping
     ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(
             @RequestParam(name = "category", required = false) Category category,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @ParameterObject Pageable pageable
     );
 
     @Operation(summary = "게시물 단건 조회 API")

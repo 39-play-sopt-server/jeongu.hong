@@ -8,6 +8,7 @@ import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
 import org.sopt.post.repository.PostRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,10 +26,8 @@ public class PostService {
         postRepository.save(new Post(request.title(), request.content(), request.category()));
     }
 
-    public List<PostResponse> getPosts(Category category, int page, int size) {
-        validatePageAndSize(page, size);
-
-        return postRepository.findAll(category, page, size).stream()
+    public List<PostResponse> getPosts(Category category, Pageable pageable) {
+        return postRepository.findAll(category, pageable).stream()
                 .map(PostResponse::from)
                 .toList();
     }
@@ -56,11 +55,5 @@ public class PostService {
     private Post findPost(long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
-    }
-
-    private void validatePageAndSize(int page, int size) {
-        if (page < 1 || size < 1) {
-            throw new BusinessException(PostErrorCode.INVALID_PAGE_OR_SIZE);
-        }
     }
 }

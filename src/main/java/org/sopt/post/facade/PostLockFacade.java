@@ -5,6 +5,7 @@ import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.domain.Category;
 import org.sopt.post.service.PostService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,10 +31,10 @@ public class PostLockFacade {
         }
     }
 
-    public List<PostResponse> getPosts(Category category, int page, int size) {
+    public List<PostResponse> getPosts(Category category, Pageable pageable) {
         lock.readLock().lock();
         try {
-            return postService.getPosts(category, page, size);
+            return postService.getPosts(category, pageable);
         } finally {
             lock.readLock().unlock();
         }
