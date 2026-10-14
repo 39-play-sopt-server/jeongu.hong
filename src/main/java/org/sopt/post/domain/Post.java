@@ -14,7 +14,8 @@ public class Post {
     private final Category category;
 
     public Post(String title, String content, Category category) {
-        validateNotBlank(title, content);
+        validateTitle(title);
+        validateContent(content);
         validateCategory(category);
         this.title = title;
         this.content = content;
@@ -42,7 +43,8 @@ public class Post {
     }
 
     public void update(String title, String content) {
-        validateNotBlank(title, content);
+        validateTitle(title);
+        validateContent(content);
         this.title = title;
         this.content = content;
     }
@@ -58,9 +60,15 @@ public class Post {
         viewCount.incrementAndGet();
     }
 
-    private void validateNotBlank(String title, String content) {
-        if (title == null || content == null || title.isBlank() || content.isBlank()) {
-            throw new BusinessException(PostErrorCode.EMPTY_TITLE_OR_CONTENT);
+    private void validateTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new BusinessException(PostErrorCode.EMPTY_TITLE);
+        }
+    }
+
+    private void validateContent(String content) {
+        if (content == null || content.isBlank()) {
+            throw new BusinessException(PostErrorCode.EMPTY_CONTENT);
         }
     }
 
