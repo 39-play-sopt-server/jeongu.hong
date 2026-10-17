@@ -12,6 +12,22 @@ springdoc:
     display-request-duration: true
 
 spring:
+  application:
+    name: assignment
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/assignment
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   data:
     web:
       pageable:
