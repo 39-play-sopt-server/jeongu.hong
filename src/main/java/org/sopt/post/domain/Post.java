@@ -1,17 +1,24 @@
 package org.sopt.post.domain;
 
+import jakarta.persistence.*;
 import org.sopt.global.error.BusinessException;
 import org.sopt.post.code.PostErrorCode;
 
-import java.util.concurrent.atomic.AtomicLong;
-
+@Entity
 public class Post {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
+
     private String content;
-    private final AtomicLong viewCount = new AtomicLong();
-    private final Category category;
+
+    private Long viewCount;
+
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     public Post(String title, String content, Category category) {
         validateTitle(title);
@@ -20,6 +27,10 @@ public class Post {
         this.title = title;
         this.content = content;
         this.category = category;
+        this.viewCount = 0L;
+    }
+
+    protected Post() {
     }
 
     public String getTitle() {
@@ -39,7 +50,7 @@ public class Post {
     }
 
     public long getViewCount() {
-        return viewCount.get();
+        return viewCount;
     }
 
     public void update(String title, String content) {
@@ -47,17 +58,6 @@ public class Post {
         validateContent(content);
         this.title = title;
         this.content = content;
-    }
-
-    public void assignId(Long id) {
-        if (this.id != null) {
-            throw new BusinessException(PostErrorCode.ASSIGNED_POST);
-        }
-        this.id = id;
-    }
-
-    public void increaseViewCount() {
-        viewCount.incrementAndGet();
     }
 
     private void validateTitle(String title) {
