@@ -1,17 +1,16 @@
 package org.sopt.post.repository;
 
-import org.sopt.post.entity.Post;
-import org.springframework.context.annotation.Primary;
+import org.sopt.post.domain.Category;
+import org.sopt.post.domain.Post;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@Primary
 public class HashMapPostRepository implements PostRepository {
 
     private final Map<Long, Post> posts = new LinkedHashMap<>();
@@ -24,8 +23,12 @@ public class HashMapPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return new ArrayList<>(posts.values());
+    public List<Post> findAll(Category category, Pageable pageable) {
+        return posts.values().stream()
+                .filter(post -> category == null || post.getCategory() == category)
+                .skip(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .toList();
     }
 
     @Override
@@ -36,15 +39,5 @@ public class HashMapPostRepository implements PostRepository {
     @Override
     public void deleteById(long id) {
         posts.remove(id);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return posts.isEmpty();
-    }
-
-    @Override
-    public boolean exists(long id) {
-        return posts.containsKey(id);
     }
 }

@@ -7,16 +7,25 @@ plugins {
 group = 'org.sopt'
 version = '1.0-SNAPSHOT'
 
+ext['jackson-2-bom.version'] = '2.21.7'
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testImplementation platform('org.junit:junit-bom:6.0.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
+
+    // Data
+    implementation 'org.springframework.boot:spring-boot-data-commons'
 }
 
 test {

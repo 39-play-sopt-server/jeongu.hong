@@ -1,60 +1,53 @@
 package org.sopt.post.controller;
 
-import org.sopt.global.code.SuccessCode;
-import org.sopt.global.response.ApiResponse;
+import org.sopt.global.response.BaseResponse;
+import org.sopt.post.code.PostSuccessCode;
+import org.sopt.post.api.PostApi;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
 import org.sopt.post.dto.PostUpdateRequest;
-import org.sopt.post.service.PostService;
+import org.sopt.post.domain.Category;
+import org.sopt.post.facade.PostLockFacade;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/posts")
-public class PostController {
+public class PostController implements PostApi {
 
-    private final PostService postService;
+    private final PostLockFacade postLockFacade;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
+    public PostController(PostLockFacade postLockFacade) {
+        this.postLockFacade = postLockFacade;
     }
 
-    @PostMapping
-    public ApiResponse<Void> createPost(
-           @RequestBody PostCreateRequest request
-    ) {
-        postService.createPost(request);
-        return ApiResponse.success(SuccessCode.CREATED);
+    @Override
+    public ResponseEntity<BaseResponse<Void>> createPost(PostCreateRequest request) {
+        postLockFacade.createPost(request);
+        return BaseResponse.success(PostSuccessCode.POST_CREATED);
     }
 
-    @GetMapping
-    public ApiResponse<List<PostResponse>> getPosts(
-            @RequestParam(name = "page", defaultValue = "1") int page
-    ) {
-        return ApiResponse.success(SuccessCode.OK, postService.getPosts());
+    @Override
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(Category category, Pageable pageable) {
+        return BaseResponse.success(PostSuccessCode.POST_FETCHED, postLockFacade.getPosts(category, pageable));
     }
 
-    @GetMapping(path = "/{postId}")
-    public ApiResponse<PostResponse> getPost(
-            @PathVariable Long postId
-    ) {
-        return ApiResponse.success(SuccessCode.OK, postService.getPost(postId));
+    @Override
+    public ResponseEntity<BaseResponse<PostResponse>> getPost(Long postId) {
+        return BaseResponse.success(PostSuccessCode.POST_FETCHED, postLockFacade.getPost(postId));
     }
 
-    @PutMapping(path = "/{postId}")
-    public ApiResponse<Void> updatePost(
-            @PathVariable Long postId,
-            @RequestBody PostUpdateRequest request) {
-        postService.updatePost(postId, request);
-        return ApiResponse.success(SuccessCode.UPDATED);
+    @Override
+    public ResponseEntity<BaseResponse<Void>> updatePost(Long postId, PostUpdateRequest request) {
+        postLockFacade.updatePost(postId, request);
+        return BaseResponse.success(PostSuccessCode.POST_UPDATED);
     }
 
-    @DeleteMapping(path = "/{postId}")
-    public ApiResponse<Void> deletePost(
-            @PathVariable Long postId
-    ) {
-        postService.deletePost(postId);
-        return ApiResponse.success(SuccessCode.DELETED);
+    @Override
+    public ResponseEntity<BaseResponse<Void>> deletePost(Long postId) {
+        postLockFacade.deletePost(postId);
+        return BaseResponse.success(PostSuccessCode.POST_DELETED);
     }
 }
