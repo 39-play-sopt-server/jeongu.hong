@@ -13,13 +13,17 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(nullable = false)
     private Long viewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
