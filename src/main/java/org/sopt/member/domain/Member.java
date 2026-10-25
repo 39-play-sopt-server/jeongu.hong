@@ -1,4 +1,6 @@
 package org.sopt.member.domain;
 
-public class Member {
+import org.sopt.global.domain.BaseEntity;
+
+public class Member extends BaseEntity {
 }

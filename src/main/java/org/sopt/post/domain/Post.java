@@ -1,11 +1,12 @@
 package org.sopt.post.domain;
 
 import jakarta.persistence.*;
+import org.sopt.global.domain.BaseEntity;
 import org.sopt.global.error.BusinessException;
 import org.sopt.post.code.PostErrorCode;
 
 @Entity
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
