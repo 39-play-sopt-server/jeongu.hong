@@ -3,6 +3,7 @@ package org.sopt.post.domain;
 import jakarta.persistence.*;
 import org.sopt.global.domain.BaseEntity;
 import org.sopt.global.error.BusinessException;
+import org.sopt.member.domain.Member;
 import org.sopt.post.code.PostErrorCode;
 
 @Entity
@@ -16,10 +17,14 @@ public class Post extends BaseEntity {
 
     private String content;
 
-    private Long viewCount;
-
     @Enumerated(EnumType.STRING)
     private Category category;
+
+    private Long viewCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     public Post(String title, String content, Category category) {
         validateTitle(title);
