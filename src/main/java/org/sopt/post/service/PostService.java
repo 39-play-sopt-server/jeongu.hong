@@ -34,10 +34,10 @@ public class PostService {
         postRepository.save(new Post(member, request.title(), request.content(), request.category()));
     }
 
-    // TODO : JPA로 전환하면서 Category별 조회 빠짐
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPosts(Category category, Pageable pageable) {
-        return postRepository.findAllBy(pageable).map(PostResponse::from);
+    public Page<PostResponse> getPosts(Category category, String keyword, Pageable pageable) {
+        return postRepository.search(category, keyword, pageable)
+                .map(PostResponse::from);
     }
 
     @Transactional
