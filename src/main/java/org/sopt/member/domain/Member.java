@@ -3,6 +3,8 @@ package org.sopt.member.domain;
 import jakarta.persistence.*;
 import org.sopt.global.domain.BaseEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Member extends BaseEntity {
 
@@ -15,6 +17,8 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    private LocalDateTime deletedAt;
 
     public Member(String name, String email) {
         this.name = name;
@@ -34,5 +38,13 @@ public class Member extends BaseEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public void withdraw() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
     }
 }

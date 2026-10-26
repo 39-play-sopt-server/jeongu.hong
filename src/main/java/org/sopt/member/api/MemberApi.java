@@ -8,9 +8,7 @@ import jakarta.validation.Valid;
 import org.sopt.global.response.BaseResponse;
 import org.sopt.member.dto.request.MemberCreateRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Member", description = "SOPT Member API")
 @RequestMapping("api/v1/members")
@@ -26,4 +24,12 @@ public interface MemberApi {
     ResponseEntity<BaseResponse<Void>> createMember(
             @RequestBody @Valid MemberCreateRequest memberCreateRequest
     );
+
+    @Operation(summary = "회원 삭제 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원입니다.(M001)")
+    })
+    @DeleteMapping("/{memberId}")
+    ResponseEntity<BaseResponse<Void>> deleteMember(@PathVariable Long memberId);
 }

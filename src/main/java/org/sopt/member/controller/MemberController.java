@@ -22,4 +22,10 @@ public class MemberController implements MemberApi {
         memberService.createMember(memberCreateRequest);
         return BaseResponse.success(MemberSuccessCode.MEMBER_CREATED);
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> deleteMember(Long memberId) {
+        memberService.deleteMember(memberId);
+        return BaseResponse.success(MemberSuccessCode.MEMBER_DELETED);
+    }
 }

@@ -25,9 +25,15 @@ public class MemberService {
         memberRepository.save(new Member(memberCreateRequest.name(), memberCreateRequest.email()));
     }
 
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member member = getMember(memberId);
+        member.withdraw();
+    }
+
     @Transactional(readOnly = true)
     public Member getMember(Long id) {
-        return memberRepository.findById(id)
+        return memberRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }
