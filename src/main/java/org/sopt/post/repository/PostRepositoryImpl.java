@@ -36,7 +36,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(post.count())
                 .from(post)
-                .where(categoryEq(category), titleContains(keyword));
+                .where(categoryEq(category), titleContains(keyword), memberIdEq(memberId));
 
         // Count 쿼리가 필요할 떄만 countQuery를 실행시켜 성능 향상.
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
