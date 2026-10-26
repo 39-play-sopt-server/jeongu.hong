@@ -1,6 +1,7 @@
 package org.sopt.post.domain;
 
 import jakarta.persistence.*;
+import org.sopt.global.domain.BaseEntity;
 import org.sopt.global.error.BusinessException;
 import org.sopt.member.domain.Member;
 import org.sopt.post.code.PostErrorCode;
@@ -13,7 +14,7 @@ import org.sopt.post.code.PostErrorCode;
                 columnNames = {"member_id", "post_id"}
         )
 )
-public class PostLike {
+public class PostLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
