@@ -1,6 +1,7 @@
 package org.sopt.post.service;
 
 import org.sopt.global.error.BusinessException;
+import org.sopt.member.service.MemberService;
 import org.sopt.post.code.PostErrorCode;
 import org.sopt.post.dto.PostCreateRequest;
 import org.sopt.post.dto.PostResponse;
@@ -18,14 +19,16 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final MemberService memberService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, MemberService memberService) {
         this.postRepository = postRepository;
+        this.memberService = memberService;
     }
 
     @Transactional
-    public void createPost(PostCreateRequest request) {
-        postRepository.save(new Post(request.title(), request.content(), request.category()));
+    public void createPost(Long memberId, PostCreateRequest request) {
+        postRepository.save(new Post(memberService.getMember(memberId), request.title(), request.content(), request.category()));
     }
 
     // TODO : JPA로 전환하면서 Category별 조회, 페이지 기능 빠짐
@@ -37,7 +40,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse getPost(long id) {
+    public PostResponse getPost(Long id) {
         postRepository.updateViewCount(id);
 
         Post post = findPost(id);
@@ -46,20 +49,20 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(long id, PostUpdateRequest request) {
+    public void updatePost(Long id, PostUpdateRequest request) {
         Post post = findPost(id);
 
         post.update(request.title(), request.content());
     }
 
     @Transactional
-    public void deletePost(long id) {
+    public void deletePost(Long id) {
         findPost(id);
 
         postRepository.deleteById(id);
     }
 
-    private Post findPost(long id) {
+    private Post findPost(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
     }

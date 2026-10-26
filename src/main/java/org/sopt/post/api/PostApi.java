@@ -24,10 +24,14 @@ public interface PostApi {
     @Operation(summary = "게시물 생성 API")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "게시글 생성 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)")
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원입니다.(M001)")
     })
     @PostMapping
-    ResponseEntity<BaseResponse<Void>> createPost(@RequestBody @Valid PostCreateRequest request);
+    ResponseEntity<BaseResponse<Void>> createPost(
+            @RequestParam Long memberId,
+            @RequestBody @Valid PostCreateRequest request
+    );
 
     @Operation(summary = "게시물 목록 조회 API")
     @ApiResponses({

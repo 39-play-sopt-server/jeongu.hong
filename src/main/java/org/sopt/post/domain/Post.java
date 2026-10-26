@@ -30,13 +30,14 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public Post(String title, String content, Category category) {
+    public Post(Member member, String title, String content, Category category) {
         validateTitle(title);
         validateContent(content);
         validateCategory(category);
         this.title = title;
         this.content = content;
         this.category = category;
+        this.member = member;
         this.viewCount = 0L;
     }
 

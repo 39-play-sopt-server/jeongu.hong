@@ -22,10 +22,10 @@ public class PostLockFacade {
         this.postService = postService;
     }
 
-    public void createPost(PostCreateRequest request) {
+    public void createPost(Long memberId, PostCreateRequest request) {
         lock.writeLock().lock();
         try {
-            postService.createPost(request);
+            postService.createPost(memberId, request);
         } finally {
             lock.writeLock().unlock();
         }

@@ -24,8 +24,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Void>> createPost(PostCreateRequest request) {
-        postLockFacade.createPost(request);
+    public ResponseEntity<BaseResponse<Void>> createPost(Long memberId, PostCreateRequest request) {
+        postLockFacade.createPost(memberId, request);
         return BaseResponse.success(PostSuccessCode.POST_CREATED);
     }
 
