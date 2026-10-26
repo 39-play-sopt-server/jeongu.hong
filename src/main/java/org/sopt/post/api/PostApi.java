@@ -13,6 +13,8 @@ import org.sopt.post.dto.response.PostResponse;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,7 @@ public interface PostApi {
     @GetMapping
     ResponseEntity<BaseResponse<Page<PostResponse>>> getPosts(
             @RequestParam(name = "category", required = false) Category category,
-            @ParameterObject Pageable pageable
+            @ParameterObject @PageableDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable
     );
 
     @Operation(summary = "게시물 단건 조회 API")
