@@ -34,6 +34,7 @@ public class Post extends BaseEntity {
         validateTitle(title);
         validateContent(content);
         validateCategory(category);
+        validateMember(member);
         this.title = title;
         this.content = content;
         this.category = category;
@@ -86,6 +87,12 @@ public class Post extends BaseEntity {
     private void validateCategory(Category category) {
         if (category == null) {
             throw new BusinessException(PostErrorCode.EMPTY_CATEGORY);
+        }
+    }
+
+    private void validateMember(Member member) {
+        if (member == null) {
+            throw new BusinessException(PostErrorCode.EMPTY_MEMBER);
         }
     }
 }
