@@ -40,6 +40,10 @@ public class Member extends BaseEntity {
         return email;
     }
 
+    public String getDisplayName() {
+        return isDeleted() ? "탈퇴한 회원" : name;
+    }
+
     public void withdraw() {
         this.deletedAt = LocalDateTime.now();
     }

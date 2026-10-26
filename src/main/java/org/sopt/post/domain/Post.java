@@ -65,6 +65,10 @@ public class Post extends BaseEntity {
         return viewCount;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
     public void update(String title, String content) {
         validateTitle(title);
         validateContent(content);
