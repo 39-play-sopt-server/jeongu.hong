@@ -57,11 +57,11 @@ public class Post extends BaseEntity {
         return category;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getViewCount() {
+    public Long getViewCount() {
         return viewCount;
     }
 
