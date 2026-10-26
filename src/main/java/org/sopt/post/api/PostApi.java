@@ -42,6 +42,7 @@ public interface PostApi {
     ResponseEntity<BaseResponse<Page<PostResponse>>> getPosts(
             @RequestParam(name = "category", required = false) Category category,
             @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "memberId", required = false) Long memberId,
             @ParameterObject @PageableDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable
     );
 

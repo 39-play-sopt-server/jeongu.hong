@@ -35,8 +35,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPosts(Category category, String keyword, Pageable pageable) {
-        return postRepository.search(category, keyword, pageable)
+    public Page<PostResponse> getPosts(Category category, String keyword, Long memberId, Pageable pageable) {
+        return postRepository.search(category, keyword, memberId, pageable)
                 .map(PostResponse::from);
     }
 

@@ -29,8 +29,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Page<PostResponse>>> getPosts(Category category, String keyword, Pageable pageable) {
-        return BaseResponse.success(PostSuccessCode.POST_FETCHED, postService.getPosts(category, keyword, pageable));
+    public ResponseEntity<BaseResponse<Page<PostResponse>>> getPosts(Category category, String keyword, Long memberId, Pageable pageable) {
+        return BaseResponse.success(PostSuccessCode.POST_FETCHED, postService.getPosts(category, keyword, memberId, pageable));
     }
 
     @Override

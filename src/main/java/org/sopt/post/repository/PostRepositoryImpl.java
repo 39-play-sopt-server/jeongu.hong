@@ -23,11 +23,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> search(Category category, String keyword, Pageable pageable) {
+    public Page<Post> search(Category category, String keyword, Long memberId, Pageable pageable) {
         List<Post> content = jpaQueryFactory
                 .selectFrom(post)
                 .join(post.member, member).fetchJoin()
-                .where(categoryEq(category), titleContains(keyword))
+                .where(categoryEq(category), titleContains(keyword), memberIdEq(memberId))
                 .orderBy(post.createdAt.desc(), post.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -48,5 +48,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     private BooleanExpression titleContains(String keyword) {
         return (keyword != null && !keyword.isBlank()) ? post.title.contains(keyword) : null;
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId == null ? null : post.member.id.eq(memberId);
     }
 }
