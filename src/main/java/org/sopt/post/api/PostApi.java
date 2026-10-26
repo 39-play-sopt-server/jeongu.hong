@@ -6,16 +6,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.sopt.global.response.BaseResponse;
-import org.sopt.post.dto.request.PostCreateRequest;
-import org.sopt.post.dto.response.PostResponse;
-import org.sopt.post.dto.request.PostUpdateRequest;
 import org.sopt.post.domain.Category;
+import org.sopt.post.dto.request.PostCreateRequest;
+import org.sopt.post.dto.request.PostUpdateRequest;
+import org.sopt.post.dto.response.PostResponse;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Post", description = "SOPT Post API")
 @RequestMapping(path = "api/v1/posts")
@@ -38,7 +37,7 @@ public interface PostApi {
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
     })
     @GetMapping
-    ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(
+    ResponseEntity<BaseResponse<Page<PostResponse>>> getPosts(
             @RequestParam(name = "category", required = false) Category category,
             @ParameterObject Pageable pageable
     );

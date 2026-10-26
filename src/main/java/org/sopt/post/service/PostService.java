@@ -10,6 +10,7 @@ import org.sopt.post.dto.request.PostUpdateRequest;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
 import org.sopt.post.repository.PostRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +34,10 @@ public class PostService {
         postRepository.save(new Post(member, request.title(), request.content(), request.category()));
     }
 
-    // TODO : JPA로 전환하면서 Category별 조회, 페이지 기능 빠짐
+    // TODO : JPA로 전환하면서 Category별 조회 빠짐
     @Transactional(readOnly = true)
-    public List<PostResponse> getPosts(Category category, Pageable pageable) {
-        return postRepository.findAll().stream()
-                .map(PostResponse::from)
-                .toList();
+    public Page<PostResponse> getPosts(Category category, Pageable pageable) {
+        return postRepository.findAllBy(pageable).map(PostResponse::from);
     }
 
     @Transactional

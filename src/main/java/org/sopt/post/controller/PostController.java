@@ -1,18 +1,17 @@
 package org.sopt.post.controller;
 
 import org.sopt.global.response.BaseResponse;
-import org.sopt.post.code.PostSuccessCode;
 import org.sopt.post.api.PostApi;
-import org.sopt.post.dto.request.PostCreateRequest;
-import org.sopt.post.dto.response.PostResponse;
-import org.sopt.post.dto.request.PostUpdateRequest;
+import org.sopt.post.code.PostSuccessCode;
 import org.sopt.post.domain.Category;
+import org.sopt.post.dto.request.PostCreateRequest;
+import org.sopt.post.dto.request.PostUpdateRequest;
+import org.sopt.post.dto.response.PostResponse;
 import org.sopt.post.service.PostService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PostController implements PostApi {
@@ -30,7 +29,7 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(Category category, Pageable pageable) {
+    public ResponseEntity<BaseResponse<Page<PostResponse>>> getPosts(Category category, Pageable pageable) {
         return BaseResponse.success(PostSuccessCode.POST_FETCHED, postService.getPosts(category, pageable));
     }
 
