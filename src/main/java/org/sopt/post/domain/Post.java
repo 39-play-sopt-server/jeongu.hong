@@ -26,6 +26,9 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Long viewCount;
 
+    @Column(nullable = false)
+    private Long likeCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -40,6 +43,7 @@ public class Post extends BaseEntity {
         this.category = category;
         this.member = member;
         this.viewCount = 0L;
+        this.likeCount = 0L;
     }
 
     protected Post() {
@@ -63,6 +67,10 @@ public class Post extends BaseEntity {
 
     public Long getViewCount() {
         return viewCount;
+    }
+
+    public Long getLikeCount() {
+        return likeCount;
     }
 
     public Member getMember() {

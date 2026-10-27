@@ -12,7 +12,8 @@ public enum PostErrorCode implements ErrorCode {
     ASSIGNED_POST(HttpStatus.INTERNAL_SERVER_ERROR, "P005", "이미 id가 할당된 게시물입니다."),
     EMPTY_MEMBER(HttpStatus.INTERNAL_SERVER_ERROR, "P006", "게시글 작성자는 비어있을 수 없습니다."),
     EMPTY_LIKE_POST(HttpStatus.INTERNAL_SERVER_ERROR, "P007", "좋아요 대상 게시글은 비어있을 수 없습니다."),
-    EMPTY_LIKE_MEMBER(HttpStatus.INTERNAL_SERVER_ERROR, "P008", "좋아요를 누른 회원은 비어있을 수 없습니다.");
+    EMPTY_LIKE_MEMBER(HttpStatus.INTERNAL_SERVER_ERROR, "P008", "좋아요를 누른 회원은 비어있을 수 없습니다."),
+    ALREADY_LIKED(HttpStatus.CONFLICT, "P009", "이미 좋아요를 누른 게시글입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
