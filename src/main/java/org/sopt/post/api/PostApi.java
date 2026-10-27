@@ -30,7 +30,7 @@ public interface PostApi {
     })
     @PostMapping
     ResponseEntity<BaseResponse<Void>> createPost(
-            @RequestParam Long memberId,
+            @RequestHeader(name = "X-Member-Id") Long memberId,
             @RequestBody @Valid PostCreateRequest request
     );
 
