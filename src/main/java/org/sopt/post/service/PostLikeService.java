@@ -43,6 +43,16 @@ public class PostLikeService {
         }
     }
 
+    @Transactional
+    public void unlikePost(Long memberId, Long postId) {
+        postRepository.decreaseLikeCount(postId); // X-Lock 획득
+
+        int deleted = postLikeRepository.deleteByMemberIdAndPostId(memberId, postId);
+        if (deleted == 0) { // 좋아요가 없거나 동시 요청으로 이미 삭제됨 → 롤백되어 감소도 원복
+            throw new BusinessException(PostErrorCode.NOT_LIKED);
+        }
+    }
+
     private Post findPost(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
