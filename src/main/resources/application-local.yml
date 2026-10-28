@@ -2,11 +2,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    # Hibernate가 테이블을 만든 뒤에 data.sql 실행
-    defer-datasource-initialization: true
   sql:
     init:
-      # 내장 DB(H2 등)가 아닌 MySQL에서도 data.sql 실행
-      # ddl-auto를 update/none으로 바꾸면 데이터가 중복 삽입되므로 never로 변경할 것
-      mode: always
-      encoding: UTF-8
+      # 로컬 테스트용 초기 데이터 (schema.sql 실행 후 삽입됨)
+      # ddl-auto를 update/none으로 바꾸면 데이터가 중복 삽입되므로 이 설정을 제거할 것
+      data-locations: classpath:db/local-data.sql
