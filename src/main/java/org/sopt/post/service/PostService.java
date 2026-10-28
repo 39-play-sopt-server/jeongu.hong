@@ -4,27 +4,28 @@ import org.sopt.global.error.BusinessException;
 import org.sopt.member.domain.Member;
 import org.sopt.member.service.MemberService;
 import org.sopt.post.code.PostErrorCode;
-import org.sopt.post.dto.request.PostCreateRequest;
-import org.sopt.post.dto.response.PostResponse;
-import org.sopt.post.dto.request.PostUpdateRequest;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
+import org.sopt.post.dto.request.PostCreateRequest;
+import org.sopt.post.dto.request.PostUpdateRequest;
+import org.sopt.post.dto.response.PostResponse;
+import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
     private final MemberService memberService;
 
-    public PostService(PostRepository postRepository, MemberService memberService) {
+    public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository, MemberService memberService) {
         this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
         this.memberService = memberService;
     }
 
@@ -58,9 +59,11 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long id) {
-        findPost(id);
+        Post post = postRepository.findByIdForUpdate(id)
+                        .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
 
-        postRepository.deleteById(id);
+        postLikeRepository.deleteAllByPostId(id);
+        postRepository.delete(post);
     }
 
     private Post findPost(Long id) {

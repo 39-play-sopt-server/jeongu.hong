@@ -34,7 +34,10 @@ public class PostLikeService {
             throw new BusinessException(PostErrorCode.ALREADY_LIKED);
         }
 
-        postRepository.increaseLikeCount(postId); // X-Lock 획득
+        int updated = postRepository.increaseLikeCount(postId); // X-Lock 획득
+        if (updated == 0) { // 락 대기 중 게시글이 삭제된 경우
+            throw new BusinessException(PostErrorCode.POST_NOT_FOUND);
+        }
 
         try {
             postLikeRepository.save(new PostLike(member, post)); // 좋아요 저장
