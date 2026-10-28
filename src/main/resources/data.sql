@@ -1,3 +1,8 @@
+-- 제목 검색용 FULLTEXT 인덱스
+-- JPA @Index로는 FULLTEXT를 만들 수 없어 직접 생성한다.
+-- 한글은 공백 기준 토큰 분리가 안 되므로 ngram parser(기본 2글자 단위)를 사용한다.
+CREATE FULLTEXT INDEX idx_post_title ON post (title) WITH PARSER ngram;
+
 -- 로컬 테스트용 초기 데이터
 -- created_at / updated_at은 JPA Auditing을 거치지 않으므로 직접 넣는다.
 
