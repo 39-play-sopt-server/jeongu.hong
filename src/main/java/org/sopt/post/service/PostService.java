@@ -1,6 +1,7 @@
 package org.sopt.post.service;
 
 import org.sopt.global.error.BusinessException;
+import org.sopt.global.response.PageResponse;
 import org.sopt.member.domain.Member;
 import org.sopt.member.service.MemberService;
 import org.sopt.post.code.PostErrorCode;
@@ -11,7 +12,6 @@ import org.sopt.post.dto.request.PostUpdateRequest;
 import org.sopt.post.dto.response.PostResponse;
 import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +36,11 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPosts(Category category, String keyword, Long memberId, Pageable pageable) {
-        return postRepository.search(category, keyword, memberId, pageable)
-                .map(PostResponse::from);
+    public PageResponse<PostResponse> getPosts(Category category, String keyword, Long memberId, Pageable pageable) {
+        return PageResponse.from(
+                postRepository.search(category, keyword, memberId, pageable)
+                        .map(PostResponse::from)
+        );
     }
 
     @Transactional
