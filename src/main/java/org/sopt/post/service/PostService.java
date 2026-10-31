@@ -1,43 +1,50 @@
 package org.sopt.post.service;
 
 import org.sopt.global.error.BusinessException;
+import org.sopt.global.response.PageResponse;
+import org.sopt.member.domain.Member;
+import org.sopt.member.service.MemberService;
 import org.sopt.post.code.PostErrorCode;
-import org.sopt.post.dto.PostCreateRequest;
-import org.sopt.post.dto.PostResponse;
-import org.sopt.post.dto.PostUpdateRequest;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
+import org.sopt.post.dto.request.PostCreateRequest;
+import org.sopt.post.dto.request.PostUpdateRequest;
+import org.sopt.post.dto.response.PostResponse;
+import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final MemberService memberService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository, MemberService memberService) {
         this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.memberService = memberService;
     }
 
     @Transactional
-    public void createPost(PostCreateRequest request) {
-        postRepository.save(new Post(request.title(), request.content(), request.category()));
+    public void createPost(Long memberId, PostCreateRequest request) {
+        Member member = memberService.getMember(memberId);
+        postRepository.save(new Post(member, request.title(), request.content(), request.category()));
     }
 
-    // TODO : JPA로 전환하면서 Category별 조회, 페이지 기능 빠짐
     @Transactional(readOnly = true)
-    public List<PostResponse> getPosts(Category category, Pageable pageable) {
-        return postRepository.findAll().stream()
-                .map(PostResponse::from)
-                .toList();
+    public PageResponse<PostResponse> getPosts(Category category, String keyword, Long memberId, Pageable pageable) {
+        return PageResponse.from(
+                postRepository.search(category, keyword, memberId, pageable)
+                        .map(PostResponse::from)
+        );
     }
 
     @Transactional
-    public PostResponse getPost(long id) {
+    public PostResponse getPost(Long id) {
         postRepository.updateViewCount(id);
 
         Post post = findPost(id);
@@ -46,20 +53,22 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(long id, PostUpdateRequest request) {
+    public void updatePost(Long id, PostUpdateRequest request) {
         Post post = findPost(id);
 
         post.update(request.title(), request.content());
     }
 
     @Transactional
-    public void deletePost(long id) {
-        findPost(id);
+    public void deletePost(Long id) {
+        Post post = postRepository.findByIdForUpdate(id)
+                        .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
 
-        postRepository.deleteById(id);
+        postLikeRepository.deleteAllByPostId(id);
+        postRepository.delete(post);
     }
 
-    private Post findPost(long id) {
+    private Post findPost(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
     }

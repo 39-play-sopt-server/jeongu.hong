@@ -15,19 +15,33 @@ spring:
   application:
     name: assignment
 
+  profiles:
+    # 활성 프로필을 지정하지 않으면 local 프로필 사용
+    default: local
+
   datasource:
     url: jdbc:mysql://localhost:3306/assignment
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  sql:
+    init:
+      # schema.sql(FULLTEXT 인덱스)은 검색 기능에 필요하므로 프로필과 무관하게 항상 실행
+      # 초기 데이터는 local 프로필에서만 data-locations로 추가한다
+      mode: always
+      encoding: UTF-8
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+    # Hibernate가 테이블을 만든 뒤에 schema.sql 실행
+    defer-datasource-initialization: true
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 100
   data:
     web:
       pageable:

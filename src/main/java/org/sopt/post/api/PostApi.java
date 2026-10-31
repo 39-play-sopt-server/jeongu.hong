@@ -6,16 +6,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.sopt.global.response.BaseResponse;
-import org.sopt.post.dto.PostCreateRequest;
-import org.sopt.post.dto.PostResponse;
-import org.sopt.post.dto.PostUpdateRequest;
+import org.sopt.global.response.PageResponse;
 import org.sopt.post.domain.Category;
+import org.sopt.post.dto.request.PostCreateRequest;
+import org.sopt.post.dto.request.PostUpdateRequest;
+import org.sopt.post.dto.response.PostResponse;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Post", description = "SOPT Post API")
 @RequestMapping(path = "api/v1/posts")
@@ -24,19 +25,25 @@ public interface PostApi {
     @Operation(summary = "게시물 생성 API")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "게시글 생성 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)")
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원입니다.(M001)")
     })
     @PostMapping
-    ResponseEntity<BaseResponse<Void>> createPost(@RequestBody @Valid PostCreateRequest request);
+    ResponseEntity<BaseResponse<Void>> createPost(
+            @RequestHeader(name = "X-Member-Id") Long memberId,
+            @RequestBody @Valid PostCreateRequest request
+    );
 
     @Operation(summary = "게시물 목록 조회 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
     })
     @GetMapping
-    ResponseEntity<BaseResponse<List<PostResponse>>> getPosts(
+    ResponseEntity<BaseResponse<PageResponse<PostResponse>>> getPosts(
             @RequestParam(name = "category", required = false) Category category,
-            @ParameterObject Pageable pageable
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "memberId", required = false) Long memberId,
+            @ParameterObject @PageableDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable
     );
 
     @Operation(summary = "게시물 단건 조회 API")

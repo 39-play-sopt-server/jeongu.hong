@@ -1,33 +1,49 @@
 package org.sopt.post.domain;
 
 import jakarta.persistence.*;
+import org.sopt.global.domain.BaseEntity;
 import org.sopt.global.error.BusinessException;
+import org.sopt.member.domain.Member;
 import org.sopt.post.code.PostErrorCode;
 
 @Entity
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String content;
 
-    private Long viewCount;
-
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    public Post(String title, String content, Category category) {
+    @Column(nullable = false)
+    private Long viewCount;
+
+    @Column(nullable = false)
+    private Long likeCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    public Post(Member member, String title, String content, Category category) {
         validateTitle(title);
         validateContent(content);
         validateCategory(category);
+        validateMember(member);
         this.title = title;
         this.content = content;
         this.category = category;
+        this.member = member;
         this.viewCount = 0L;
+        this.likeCount = 0L;
     }
 
     protected Post() {
@@ -45,12 +61,20 @@ public class Post {
         return category;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getViewCount() {
+    public Long getViewCount() {
         return viewCount;
+    }
+
+    public Long getLikeCount() {
+        return likeCount;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public void update(String title, String content) {
@@ -75,6 +99,12 @@ public class Post {
     private void validateCategory(Category category) {
         if (category == null) {
             throw new BusinessException(PostErrorCode.EMPTY_CATEGORY);
+        }
+    }
+
+    private void validateMember(Member member) {
+        if (member == null) {
+            throw new BusinessException(PostErrorCode.EMPTY_MEMBER);
         }
     }
 }

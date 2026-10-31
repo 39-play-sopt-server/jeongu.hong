@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+  sql:
+    init:
+      # 로컬 테스트용 초기 데이터 (schema.sql 실행 후 삽입됨)
+      # ddl-auto를 update/none으로 바꾸면 데이터가 중복 삽입되므로 이 설정을 제거할 것
+      data-locations: classpath:db/local-data.sql
