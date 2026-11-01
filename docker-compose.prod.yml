@@ -1,6 +1,6 @@
 services:
   app:
-    image: ${DOCKERHUB_ID}/assignment-app:1.0
+    image: ${DOCKERHUB_ID}/assignment-app:${IMAGE_TAG:-1.0}
     container_name: assignment-app
     restart: unless-stopped
     expose:

@@ -19,3 +19,49 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/assignment-app:${{ github.sha }}
+
+  deploy:
+    needs: push-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SSH 준비
+        env:
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -T 10 -H "$HOST" >> ~/.ssh/known_hosts
+
+      - name: 배포
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          TAG: ${{ github.sha }}
+        run: |
+          scp -i ~/.ssh/deploy_key docker-compose.prod.yml "$EC2_USER@$HOST:~/app/"
+          scp -i ~/.ssh/deploy_key nginx/default.conf "$EC2_USER@$HOST:~/app/nginx/"
+          ssh -i ~/.ssh/deploy_key "$EC2_USER@$HOST" "TAG=$TAG bash -s" <<'EOF'
+          set -e
+          cd ~/app
+          if grep -q '^IMAGE_TAG=' .env; then
+            sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$TAG/" .env
+          else
+            printf '\nIMAGE_TAG=%s\n' "$TAG" >> .env
+          fi
+          docker compose -f docker-compose.prod.yml pull
+          docker compose -f docker-compose.prod.yml up -d
+          docker compose -f docker-compose.prod.yml restart nginx
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null http://localhost/api/v1/posts; then
+              docker image prune -af
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs --tail 50 assignment-app
+          exit 1
+          EOF
