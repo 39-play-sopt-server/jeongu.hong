@@ -56,7 +56,7 @@ jobs:
           docker compose -f docker-compose.prod.yml up -d
           docker compose -f docker-compose.prod.yml restart nginx
           for i in $(seq 1 30); do
-            if curl -fsS -o /dev/null http://localhost/api/v1/posts; then
+            if curl -fsSk -o /dev/null https://localhost/api/v1/posts; then
               docker image prune -af
               exit 0
             fi
