@@ -1,3 +1,7 @@
+# 프론트엔드 Origin 목록 (쉼표로 구분, 운영에서는 CORS_ALLOWED_ORIGINS로 지정)
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+
 springdoc:
   packages-to-scan: org.sopt
   paths-to-match: /api/**
@@ -20,7 +24,7 @@ spring:
     default: local
 
   datasource:
-    url: jdbc:mysql://localhost:3306/assignment
+    url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -34,7 +38,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     # Hibernate가 테이블을 만든 뒤에 schema.sql 실행
     defer-datasource-initialization: true
     show-sql: true
