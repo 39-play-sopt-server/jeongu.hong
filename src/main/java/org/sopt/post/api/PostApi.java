@@ -1,6 +1,7 @@
 package org.sopt.post.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Post", description = "SOPT Post API")
@@ -30,7 +32,7 @@ public interface PostApi {
     })
     @PostMapping
     ResponseEntity<BaseResponse<Void>> createPost(
-            @RequestHeader(name = "X-Member-Id") Long memberId,
+            @Parameter(hidden = true) @AuthenticationPrincipal Long memberId,
             @RequestBody @Valid PostCreateRequest request
     );
 
