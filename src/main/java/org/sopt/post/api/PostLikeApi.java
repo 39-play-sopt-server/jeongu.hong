@@ -1,11 +1,13 @@
 package org.sopt.post.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sopt.global.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "PostLike", description = "SOPT Post Like API")
@@ -20,7 +22,7 @@ public interface PostLikeApi {
     })
     @PostMapping(path = "/{postId}/likes")
     ResponseEntity<BaseResponse<Void>> likePost(
-            @RequestHeader(name = "X-Member-Id") Long memberId,
+            @Parameter(hidden = true) @AuthenticationPrincipal Long memberId,
             @PathVariable Long postId
     );
 
@@ -31,7 +33,7 @@ public interface PostLikeApi {
     })
     @DeleteMapping(path = "/{postId}/likes")
     ResponseEntity<BaseResponse<Void>> unlikePost(
-            @RequestHeader(name = "X-Member-Id") Long memberId,
+            @Parameter(hidden = true) @AuthenticationPrincipal Long memberId,
             @PathVariable Long postId
     );
 }

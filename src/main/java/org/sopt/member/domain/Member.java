@@ -18,11 +18,15 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
     private LocalDateTime deletedAt;
 
-    public Member(String name, String email) {
+    public Member(String name, String email, String password) {
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     protected Member() {
@@ -38,6 +42,10 @@ public class Member extends BaseEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getDisplayName() {
