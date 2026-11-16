@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -18,12 +17,9 @@ public class JwtProvider {
 	private final SecretKey secretKey;
 	private final long accessTokenExpiration;
 
-	public JwtProvider(
-		@Value("${jwt.secret}") String secret,
-		@Value("${jwt.access-token-expiration}") long accessTokenExpiration
-	) {
-		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-		this.accessTokenExpiration = accessTokenExpiration;
+	public JwtProvider(JwtProperties jwtProperties) {
+		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
+		this.accessTokenExpiration = jwtProperties.accessTokenExpiration();
 	}
 
 	public String createAccessToken(Long memberId) {
