@@ -19,12 +19,14 @@ public class MemberController implements MemberApi {
 
     @Override
     public ResponseEntity<BaseResponse<Long>> me(AuthMember authMember) {
-        return BaseResponse.success(MemberSuccessCode.MEMBER_FETCHED, authMember.memberId());
+        return ResponseEntity.status(MemberSuccessCode.MEMBER_FETCHED.getHttpStatus())
+                .body(BaseResponse.success(MemberSuccessCode.MEMBER_FETCHED, authMember.memberId()));
     }
 
     @Override
     public ResponseEntity<BaseResponse<Void>> deleteMember(Long memberId) {
         memberService.deleteMember(memberId);
-        return BaseResponse.success(MemberSuccessCode.MEMBER_DELETED);
+        return ResponseEntity.status(MemberSuccessCode.MEMBER_DELETED.getHttpStatus())
+                .body(BaseResponse.success(MemberSuccessCode.MEMBER_DELETED));
     }
 }

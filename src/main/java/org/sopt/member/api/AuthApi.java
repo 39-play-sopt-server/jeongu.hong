@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.sopt.global.response.BaseResponse;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
-import org.sopt.member.dto.response.LoginResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,12 +28,13 @@ public interface AuthApi {
     @PostMapping("/signup")
     ResponseEntity<BaseResponse<Long>> signup(@RequestBody @Valid MemberCreateRequest request);
 
-    @Operation(summary = "로그인 API")
+    @Operation(summary = "로그인 API",
+            description = "Access Token은 Authorization 헤더, Refresh Token은 HttpOnly 쿠키로 발급됩니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "200", description = "로그인 성공 (Authorization 헤더 + refreshToken 쿠키)"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)"),
             @ApiResponse(responseCode = "401", description = "이메일 또는 비밀번호가 올바르지 않습니다.(M003)")
     })
     @PostMapping("/login")
-    ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request);
+    ResponseEntity<BaseResponse<Void>> login(@RequestBody @Valid LoginRequest request);
 }

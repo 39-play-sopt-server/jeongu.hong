@@ -20,12 +20,14 @@ public class PostLikeController implements PostLikeApi {
     @Override
     public ResponseEntity<BaseResponse<Void>> likePost(AuthMember authMember, Long postId) {
         postLikeService.likePost(authMember.memberId(), postId);
-        return BaseResponse.success(PostSuccessCode.POST_LIKED);
+        return ResponseEntity.status(PostSuccessCode.POST_LIKED.getHttpStatus())
+                .body(BaseResponse.success(PostSuccessCode.POST_LIKED));
     }
 
     @Override
     public ResponseEntity<BaseResponse<Void>> unlikePost(AuthMember authMember, Long postId) {
         postLikeService.unlikePost(authMember.memberId(), postId);
-        return BaseResponse.success(PostSuccessCode.POST_UNLIKED);
+        return ResponseEntity.status(PostSuccessCode.POST_UNLIKED.getHttpStatus())
+                .body(BaseResponse.success(PostSuccessCode.POST_UNLIKED));
     }
 }
