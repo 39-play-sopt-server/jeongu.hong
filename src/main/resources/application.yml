@@ -8,6 +8,10 @@ jwt:
   refresh-token-expiration: 14d
   refresh-token-max-lifetime: 30d
 
+cookie:
+  secure: ${COOKIE_SECURE:true}
+  same-site: Strict
+
 springdoc:
   packages-to-scan: org.sopt
   paths-to-match: /api/**
