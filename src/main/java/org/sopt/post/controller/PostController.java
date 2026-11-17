@@ -2,6 +2,7 @@ package org.sopt.post.controller;
 
 import org.sopt.global.response.BaseResponse;
 import org.sopt.global.response.PageResponse;
+import org.sopt.global.security.AuthMember;
 import org.sopt.post.api.PostApi;
 import org.sopt.post.code.PostSuccessCode;
 import org.sopt.post.domain.Category;
@@ -23,8 +24,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Void>> createPost(Long memberId, PostCreateRequest request) {
-        postService.createPost(memberId, request);
+    public ResponseEntity<BaseResponse<Void>> createPost(AuthMember authMember, PostCreateRequest request) {
+        postService.createPost(authMember.memberId(), request);
         return BaseResponse.success(PostSuccessCode.POST_CREATED);
     }
 

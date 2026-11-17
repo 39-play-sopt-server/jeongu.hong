@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.sopt.global.response.BaseResponse;
 import org.sopt.global.response.PageResponse;
+import org.sopt.global.security.AuthMember;
 import org.sopt.post.domain.Category;
 import org.sopt.post.dto.request.PostCreateRequest;
 import org.sopt.post.dto.request.PostUpdateRequest;
@@ -32,7 +33,7 @@ public interface PostApi {
     })
     @PostMapping
     ResponseEntity<BaseResponse<Void>> createPost(
-            @Parameter(hidden = true) @AuthenticationPrincipal Long memberId,
+            @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
             @RequestBody @Valid PostCreateRequest request
     );
 

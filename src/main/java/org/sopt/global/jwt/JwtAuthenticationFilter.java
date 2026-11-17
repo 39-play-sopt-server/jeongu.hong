@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.sopt.global.error.BusinessException;
+import org.sopt.global.security.AuthMember;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,11 +35,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                Long memberId = jwtProvider.getMemberId(token);
+                AuthMember authMember = new AuthMember(jwtProvider.getMemberId(token));
 
-                // 인증 완료된 Authentication 생성 후 SecurityContext에 저장
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(memberId, null, List.of());
+                    new UsernamePasswordAuthenticationToken(authMember, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (BusinessException e) {
                 request.setAttribute(ERROR_CODE_ATTRIBUTE, e.getErrorCode());

@@ -1,6 +1,7 @@
 package org.sopt.member.controller;
 
 import org.sopt.global.response.BaseResponse;
+import org.sopt.global.security.AuthMember;
 import org.sopt.member.api.MemberApi;
 import org.sopt.member.code.MemberSuccessCode;
 import org.sopt.member.service.MemberService;
@@ -17,8 +18,8 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Long>> me(Long memberId) {
-        return BaseResponse.success(MemberSuccessCode.MEMBER_FETCHED, memberId);
+    public ResponseEntity<BaseResponse<Long>> me(AuthMember authMember) {
+        return BaseResponse.success(MemberSuccessCode.MEMBER_FETCHED, authMember.memberId());
     }
 
     @Override

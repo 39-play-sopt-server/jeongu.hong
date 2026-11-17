@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sopt.global.response.BaseResponse;
+import org.sopt.global.security.AuthMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public interface MemberApi {
             @ApiResponse(responseCode = "401", description = "인증이 필요합니다.(401)")
     })
     @GetMapping("/me")
-    ResponseEntity<BaseResponse<Long>> me(@Parameter(hidden = true) @AuthenticationPrincipal Long memberId);
+    ResponseEntity<BaseResponse<Long>> me(@Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember);
 
     @Operation(summary = "회원 삭제 API")
     @ApiResponses({
