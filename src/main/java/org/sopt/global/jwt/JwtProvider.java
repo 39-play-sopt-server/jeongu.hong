@@ -1,5 +1,6 @@
 package org.sopt.global.jwt;
 
+import java.time.Duration;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -19,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
 
 	private final SecretKey secretKey;
-	private final long accessTokenExpiration;
+	private final Duration accessTokenExpiration;
 
 	public JwtProvider(JwtProperties jwtProperties) {
 		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
@@ -32,7 +33,7 @@ public class JwtProvider {
 		return Jwts.builder()
 			.subject(String.valueOf(memberId))   // 누구의 토큰인지
 			.issuedAt(now)                       // 발급 시각
-			.expiration(new Date(now.getTime() + accessTokenExpiration)) // 만료 시각
+			.expiration(new Date(now.getTime() + accessTokenExpiration.toMillis())) // 만료 시각
 			.signWith(secretKey)                 // 서명
 			.compact();
 	}
