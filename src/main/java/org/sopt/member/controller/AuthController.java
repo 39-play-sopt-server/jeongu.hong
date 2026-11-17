@@ -35,6 +35,14 @@ public class AuthController implements AuthApi {
             .body(BaseResponse.success(MemberSuccessCode.LOGIN_SUCCESS));
     }
 
+    @Override
+    public ResponseEntity<BaseResponse<Void>> reissue(String refreshToken) {
+        TokenPair tokens = authService.reissue(refreshToken);
+        return ResponseEntity.status(MemberSuccessCode.TOKEN_REISSUED.getHttpStatus())
+            .headers(createTokenHeaders(tokens))
+            .body(BaseResponse.success(MemberSuccessCode.TOKEN_REISSUED));
+    }
+
     private HttpHeaders createTokenHeaders(TokenPair tokens) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(tokens.accessToken());

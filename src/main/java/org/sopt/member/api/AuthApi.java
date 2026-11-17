@@ -1,15 +1,19 @@
 package org.sopt.member.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
+import org.sopt.global.jwt.RefreshTokenCookieProvider;
 import org.sopt.global.response.BaseResponse;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,4 +41,15 @@ public interface AuthApi {
     })
     @PostMapping("/login")
     ResponseEntity<BaseResponse<Void>> login(@RequestBody @Valid LoginRequest request);
+
+    @Operation(summary = "토큰 재발급 API",
+        description = "refreshToken 쿠키로 Access/Refresh Token을 재발급합니다. 응답 형식은 로그인과 같습니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "재발급 성공 (Authorization 헤더 + refreshToken 쿠키)"),
+        @ApiResponse(responseCode = "401", description = "만료(A001), 위조(A002), 세션 없음(A003), 재사용 탐지(A004), 세션 만료(A005)")
+    })
+    @PostMapping("/reissue")
+    ResponseEntity<BaseResponse<Void>> reissue(
+        @Parameter(hidden = true)
+        @CookieValue(name = RefreshTokenCookieProvider.COOKIE_NAME, required = false) String refreshToken);
 }

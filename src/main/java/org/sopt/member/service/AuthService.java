@@ -2,6 +2,7 @@ package org.sopt.member.service;
 
 import java.time.LocalDateTime;
 
+import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.jwt.JwtProperties;
 import org.sopt.global.jwt.JwtProvider;
@@ -64,5 +65,37 @@ public class AuthService {
             );
 
         return new TokenPair(accessToken, refreshToken);
+    }
+
+    @Transactional(noRollbackFor = BusinessException.class)
+    public TokenPair reissue(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        Long memberId = jwtProvider.getMemberIdFromRefreshToken(refreshToken);
+        RefreshToken saved = refreshTokenRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (!saved.matches(refreshToken)) {
+            refreshTokenRepository.delete(saved);
+            throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_REUSED);
+        }
+
+        if (saved.isSessionExpired(LocalDateTime.now())) {
+            refreshTokenRepository.delete(saved);
+            throw new BusinessException(AuthErrorCode.SESSION_EXPIRED);
+        }
+
+        if (memberRepository.findByIdAndDeletedAtIsNull(memberId).isEmpty()) {
+            refreshTokenRepository.delete(saved);
+            throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        String newAccessToken = jwtProvider.createAccessToken(memberId);
+        String newRefreshToken = jwtProvider.createRefreshToken(memberId);
+        saved.rotate(newRefreshToken);
+
+        return new TokenPair(newAccessToken, newRefreshToken);
     }
 }
