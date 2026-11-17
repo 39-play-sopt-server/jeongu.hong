@@ -1,6 +1,5 @@
 package org.sopt.global.jwt;
 
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +17,8 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";
+
+    public static final String ERROR_CODE_ATTRIBUTE = "authErrorCode";
 
     private final JwtProvider jwtProvider;
 
@@ -39,10 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(memberId, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } catch (JwtException | IllegalArgumentException e) {
-                // 유효하지 않은 토큰이면 인증 정보를 저장하지 않음 → AuthorizationFilter에서 401
             } catch (BusinessException e) {
-
+                request.setAttribute(ERROR_CODE_ATTRIBUTE, e.getErrorCode());
             }
         }
 

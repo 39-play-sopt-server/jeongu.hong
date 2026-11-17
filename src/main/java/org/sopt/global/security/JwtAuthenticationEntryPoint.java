@@ -1,5 +1,7 @@
 package org.sopt.global.security;
 
+import static org.sopt.global.jwt.JwtAuthenticationFilter.*;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.sopt.global.code.ErrorCode;
@@ -28,11 +30,20 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        ErrorCode errorCode = GlobalErrorCode.UNAUTHORIZED;
+        ErrorCode errorCode = resolveErrorCode(request);
         response.setStatus(errorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         objectMapper.writeValue(response.getWriter(),
                 new BaseResponse<>(false, errorCode.getCode(), errorCode.getMessage(), null));
+    }
+
+
+    private ErrorCode resolveErrorCode(HttpServletRequest request) {
+        Object errorCode = request.getAttribute(ERROR_CODE_ATTRIBUTE);
+        if (errorCode instanceof ErrorCode code) {
+            return code;
+        }
+        return GlobalErrorCode.UNAUTHORIZED;
     }
 }
