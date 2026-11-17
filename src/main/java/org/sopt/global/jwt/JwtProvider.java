@@ -2,6 +2,7 @@ package org.sopt.global.jwt;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -19,27 +20,53 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtProvider {
 
+	private static final String TOKEN_TYPE_CLAIM = "type";
+
 	private final SecretKey secretKey;
 	private final Duration accessTokenExpiration;
+	private final Duration refreshTokenExpiration;
 
 	public JwtProvider(JwtProperties jwtProperties) {
 		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
 		this.accessTokenExpiration = jwtProperties.accessTokenExpiration();
+		this.refreshTokenExpiration = jwtProperties.refreshTokenExpiration();
 	}
 
 	public String createAccessToken(Long memberId) {
+		return createToken(memberId, TokenType.ACCESS, accessTokenExpiration);
+	}
+
+	public String createRefreshToken(Long memberId) {
+		return createToken(memberId, TokenType.REFRESH, refreshTokenExpiration);
+	}
+
+	private String createToken(Long memberId, TokenType tokenType, Duration expiration) {
 		Date now = new Date();
 
 		return Jwts.builder()
-			.subject(String.valueOf(memberId))   // 누구의 토큰인지
-			.issuedAt(now)                       // 발급 시각
-			.expiration(new Date(now.getTime() + accessTokenExpiration.toMillis())) // 만료 시각
-			.signWith(secretKey)                 // 서명
+			.id(UUID.randomUUID().toString())
+			.subject(String.valueOf(memberId))
+			.claim(TOKEN_TYPE_CLAIM, tokenType.getValue())
+			.issuedAt(now)
+			.expiration(new Date(now.getTime() + expiration.toMillis()))
+			.signWith(secretKey)
 			.compact();
 	}
 
-	public Long getMemberId(String token) {
-		return Long.valueOf(parseClaims(token).getSubject());
+	public Long getMemberIdFromAccessToken(String token) {
+		return getMemberId(token, TokenType.ACCESS);
+	}
+
+	public Long getMemberIdFromRefreshToken(String token) {
+		return getMemberId(token, TokenType.REFRESH);
+	}
+
+	private Long getMemberId(String token, TokenType expectedType) {
+		Claims claims = parseClaims(token);
+		if (!expectedType.matches(claims.get(TOKEN_TYPE_CLAIM, String.class))) {
+			throw new BusinessException(AuthErrorCode.INVALID_TOKEN);
+		}
+		return Long.valueOf(claims.getSubject());
 	}
 
 	private Claims parseClaims(String token) {
