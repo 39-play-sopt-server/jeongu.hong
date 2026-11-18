@@ -9,11 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.sopt.global.auth.AuthMember;
 import org.sopt.global.auth.token.TokenBlacklist;
+import org.sopt.global.auth.token.TokenClaims;
 import org.sopt.global.auth.token.TokenVerifier;
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -42,14 +44,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private void authenticate(String token, HttpServletRequest request) {
         try {
-            AuthMember authMember = AuthMember.from(tokenVerifier.verifyAccessToken(token));
+            TokenClaims claims = tokenVerifier.verifyAccessToken(token);
+            AuthMember authMember = AuthMember.from(claims);
 
             if (isRevoked(authMember.tokenId())) {
                 throw new BusinessException(AuthErrorCode.REVOKED_TOKEN);
             }
 
+            List<SimpleGrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority(claims.role().getAuthority()));
             UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(authMember, null, List.of());
+                new UsernamePasswordAuthenticationToken(authMember, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (BusinessException e) {
             request.setAttribute(ERROR_CODE_ATTRIBUTE, e.getErrorCode());
