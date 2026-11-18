@@ -1,7 +1,9 @@
 package org.sopt.global.config;
 
+import org.sopt.global.auth.Role;
 import org.sopt.global.auth.token.TokenBlacklist;
 import org.sopt.global.auth.web.BearerTokenResolver;
+import org.sopt.global.auth.web.RestAccessDeniedHandler;
 import org.sopt.global.auth.web.TokenAuthenticationFilter;
 import org.sopt.global.auth.web.TokenAuthenticationEntryPoint;
 import org.sopt.global.auth.token.TokenVerifier;
@@ -36,10 +38,13 @@ public class SecurityConfig {
 		"/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/auth/reissue"
 	};
 
+	private static final String ADMIN_URLS = "/api/v1/admin/**";
+
 	private final TokenVerifier tokenVerifier;
 	private final BearerTokenResolver bearerTokenResolver;
 	private final TokenBlacklist tokenBlacklist;
 	private final TokenAuthenticationEntryPoint authenticationEntryPoint;
+	private final RestAccessDeniedHandler accessDeniedHandler;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -59,10 +64,12 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.GET, PUBLIC_GET_URLS).permitAll()
 				.requestMatchers(HttpMethod.POST, PUBLIC_POST_URLS).permitAll()
 				.requestMatchers(SWAGGER_URLS).permitAll()
+				.requestMatchers(ADMIN_URLS).hasRole(Role.ADMIN.name())
 				.anyRequest().authenticated())
-			// 인증 실패 시 401 응답
+			// 인증 실패(401)와 권한 부족(403) 응답
 			.exceptionHandling(e -> e
-				.authenticationEntryPoint(authenticationEntryPoint))
+				.authenticationEntryPoint(authenticationEntryPoint)
+				.accessDeniedHandler(accessDeniedHandler))
 			// JWT 인증 필터 추가
 			.addFilterBefore(new TokenAuthenticationFilter(tokenVerifier, bearerTokenResolver, tokenBlacklist),
 				UsernamePasswordAuthenticationFilter.class)
