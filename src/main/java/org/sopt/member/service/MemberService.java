@@ -1,5 +1,7 @@
 package org.sopt.member.service;
 
+import org.sopt.global.auth.AuthMember;
+import org.sopt.global.auth.token.TokenBlacklist;
 import org.sopt.global.error.BusinessException;
 import org.sopt.member.domain.Member;
 import org.sopt.member.code.MemberErrorCode;
@@ -16,12 +18,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenBlacklist tokenBlacklist;
 
     @Transactional
-    public void withdraw(Long memberId) {
-        Member member = getMember(memberId);
+    public void withdraw(AuthMember authMember) {
+        Member member = getMember(authMember.memberId());
         member.withdraw();
-        refreshTokenRepository.deleteByMemberId(memberId);
+        refreshTokenRepository.deleteByMemberId(authMember.memberId());
+        tokenBlacklist.add(authMember.tokenId(), authMember.tokenExpiresAt());
     }
 
     @Transactional(readOnly = true)

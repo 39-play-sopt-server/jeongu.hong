@@ -27,7 +27,7 @@ public class MemberController implements MemberApi {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> withdraw(AuthMember authMember) {
-        memberService.withdraw(authMember.memberId());
+        memberService.withdraw(authMember);
         return ResponseEntity.status(MemberSuccessCode.MEMBER_DELETED.getHttpStatus())
             .header(HttpHeaders.SET_COOKIE, refreshTokenCookieProvider.delete().toString())
             .body(BaseResponse.success(MemberSuccessCode.MEMBER_DELETED));

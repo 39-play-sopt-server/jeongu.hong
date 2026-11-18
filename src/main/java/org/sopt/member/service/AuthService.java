@@ -2,6 +2,8 @@ package org.sopt.member.service;
 
 import java.time.LocalDateTime;
 
+import org.sopt.global.auth.AuthMember;
+import org.sopt.global.auth.token.TokenBlacklist;
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.auth.SessionProperties;
@@ -31,6 +33,7 @@ public class AuthService {
     private final TokenIssuer tokenIssuer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final SessionProperties sessionProperties;
+    private final TokenBlacklist tokenBlacklist;
 
     @Transactional
     public Long signup(MemberCreateRequest request) {
@@ -102,7 +105,8 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(Long memberId) {
-        refreshTokenRepository.deleteByMemberId(memberId);
+    public void logout(AuthMember authMember) {
+        refreshTokenRepository.deleteByMemberId(authMember.memberId());
+        tokenBlacklist.add(authMember.tokenId(), authMember.tokenExpiresAt());
     }
 }

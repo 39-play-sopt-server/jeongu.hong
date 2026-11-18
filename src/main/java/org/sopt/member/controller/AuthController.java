@@ -46,7 +46,7 @@ public class AuthController implements AuthApi {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> logout(AuthMember authMember) {
-        authService.logout(authMember.memberId());
+        authService.logout(authMember);
         return ResponseEntity.status(MemberSuccessCode.LOGOUT_SUCCESS.getHttpStatus())
             .header(HttpHeaders.SET_COOKIE, refreshTokenCookieProvider.delete().toString())
             .body(BaseResponse.success(MemberSuccessCode.LOGOUT_SUCCESS));
