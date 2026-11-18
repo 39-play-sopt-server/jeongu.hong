@@ -1,6 +1,7 @@
 package org.sopt.member.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.sopt.global.auth.AuthMember;
 import org.sopt.global.auth.token.TokenBlacklist;
@@ -55,11 +56,12 @@ public class AuthService {
             throw new BusinessException(MemberErrorCode.INVALID_CREDENTIALS);
         }
 
-        return startNewSession(member.getId());
+        return startNewSession(member);
     }
 
-    private TokenPair startNewSession(Long memberId) {
-        String accessToken = tokenIssuer.issueAccessToken(memberId);
+    private TokenPair startNewSession(Member member) {
+        Long memberId = member.getId();
+        String accessToken = tokenIssuer.issueAccessToken(memberId, member.getRole());
         String refreshToken = tokenIssuer.issueRefreshToken(memberId);
         LocalDateTime sessionExpiresAt = LocalDateTime.now().plus(sessionProperties.maxLifetime());
 
@@ -92,12 +94,13 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.SESSION_EXPIRED);
         }
 
-        if (memberRepository.findByIdAndDeletedAtIsNull(memberId).isEmpty()) {
+        Optional<Member> member = memberRepository.findByIdAndDeletedAtIsNull(memberId);
+        if (member.isEmpty()) {
             refreshTokenRepository.delete(saved);
             throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        String newAccessToken = tokenIssuer.issueAccessToken(memberId);
+        String newAccessToken = tokenIssuer.issueAccessToken(memberId, member.get().getRole());
         String newRefreshToken = tokenIssuer.issueRefreshToken(memberId);
         saved.rotate(newRefreshToken);
 

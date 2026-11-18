@@ -6,9 +6,11 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
+import org.sopt.global.auth.Role;
 import org.sopt.global.auth.token.TokenIssuer;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 
 @Component
@@ -25,25 +27,27 @@ public class JwtTokenIssuer implements TokenIssuer {
 	}
 
 	@Override
-	public String issueAccessToken(Long memberId) {
-		return issue(memberId, TokenType.ACCESS, accessTokenExpiration);
+	public String issueAccessToken(Long memberId, Role role) {
+		return baseBuilder(memberId, TokenType.ACCESS, accessTokenExpiration)
+			.claim(JwtClaimNames.ROLE, role.name())
+			.compact();
 	}
 
 	@Override
 	public String issueRefreshToken(Long memberId) {
-		return issue(memberId, TokenType.REFRESH, refreshTokenExpiration);
+		return baseBuilder(memberId, TokenType.REFRESH, refreshTokenExpiration)
+			.compact();
 	}
 
-	private String issue(Long memberId, TokenType tokenType, Duration expiration) {
+	private JwtBuilder baseBuilder(Long memberId, TokenType tokenType, Duration expiration) {
 		Date now = new Date();
 
 		return Jwts.builder()
 			.id(UUID.randomUUID().toString())
 			.subject(String.valueOf(memberId))
-			.claim(TokenType.CLAIM_NAME, tokenType.getValue())
+			.claim(JwtClaimNames.TYPE, tokenType.getValue())
 			.issuedAt(now)
 			.expiration(new Date(now.getTime() + expiration.toMillis()))
-			.signWith(secretKey)
-			.compact();
+			.signWith(secretKey);
 	}
 }

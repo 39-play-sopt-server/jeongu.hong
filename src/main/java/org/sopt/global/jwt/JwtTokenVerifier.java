@@ -1,5 +1,6 @@
 package org.sopt.global.jwt;
 
+import org.sopt.global.auth.Role;
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.auth.token.TokenClaims;
@@ -32,7 +33,7 @@ public class JwtTokenVerifier implements TokenVerifier {
 
 	private TokenClaims verify(String token, TokenType expectedType) {
 		Claims claims = parseClaims(token);
-		if (!expectedType.matches(claims.get(TokenType.CLAIM_NAME, String.class))) {
+		if (!expectedType.matches(claims.get(JwtClaimNames.TYPE, String.class))) {
 			throw new BusinessException(AuthErrorCode.INVALID_TOKEN);
 		}
 		return toTokenClaims(claims);
@@ -53,7 +54,20 @@ public class JwtTokenVerifier implements TokenVerifier {
 		return new TokenClaims(
 			Long.valueOf(claims.getSubject()),
 			claims.getId(),
-			claims.getExpiration().toInstant()
+			claims.getExpiration().toInstant(),
+			parseRole(claims)
 		);
+	}
+
+	private Role parseRole(Claims claims) {
+		String role = claims.get(JwtClaimNames.ROLE, String.class);
+		if (role == null) {
+			return Role.USER;
+		}
+		try {
+			return Role.valueOf(role);
+		} catch (IllegalArgumentException e) {
+			throw new BusinessException(AuthErrorCode.INVALID_TOKEN);
+		}
 	}
 }
