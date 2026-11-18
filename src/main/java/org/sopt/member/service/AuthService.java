@@ -7,6 +7,7 @@ import org.sopt.global.error.BusinessException;
 import org.sopt.global.jwt.JwtProperties;
 import org.sopt.global.jwt.JwtProvider;
 import org.sopt.global.jwt.TokenPair;
+import org.sopt.global.security.TokenIssuer;
 import org.sopt.member.code.MemberErrorCode;
 import org.sopt.member.domain.Member;
 import org.sopt.member.domain.RefreshToken;
@@ -27,6 +28,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final TokenIssuer tokenIssuer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
 
@@ -54,8 +56,8 @@ public class AuthService {
     }
 
     private TokenPair startNewSession(Long memberId) {
-        String accessToken = jwtProvider.createAccessToken(memberId);
-        String refreshToken = jwtProvider.createRefreshToken(memberId);
+        String accessToken = tokenIssuer.issueAccessToken(memberId);
+        String refreshToken = tokenIssuer.issueRefreshToken(memberId);
         LocalDateTime sessionExpiresAt = LocalDateTime.now().plus(jwtProperties.refreshTokenMaxLifetime());
 
         refreshTokenRepository.findByMemberId(memberId)
@@ -92,8 +94,8 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        String newAccessToken = jwtProvider.createAccessToken(memberId);
-        String newRefreshToken = jwtProvider.createRefreshToken(memberId);
+        String newAccessToken = tokenIssuer.issueAccessToken(memberId);
+        String newRefreshToken = tokenIssuer.issueRefreshToken(memberId);
         saved.rotate(newRefreshToken);
 
         return new TokenPair(newAccessToken, newRefreshToken);

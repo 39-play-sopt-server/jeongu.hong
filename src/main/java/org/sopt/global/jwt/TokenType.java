@@ -7,6 +7,8 @@ public enum TokenType {
 	ACCESS("access"),
 	REFRESH("refresh");
 
+	public static final String CLAIM_NAME = "type";
+
 	private final String value;
 
 	TokenType(String value) {
