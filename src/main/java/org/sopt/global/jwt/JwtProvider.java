@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtProvider {
@@ -23,11 +22,13 @@ public class JwtProvider {
 	private static final String TOKEN_TYPE_CLAIM = "type";
 
 	private final SecretKey secretKey;
+	private final JwtParser jwtParser;
 	private final Duration accessTokenExpiration;
 	private final Duration refreshTokenExpiration;
 
-	public JwtProvider(JwtProperties jwtProperties) {
-		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
+	public JwtProvider(SecretKey secretKey, JwtParser jwtParser, JwtProperties jwtProperties) {
+		this.secretKey = secretKey;
+		this.jwtParser = jwtParser;
 		this.accessTokenExpiration = jwtProperties.accessTokenExpiration();
 		this.refreshTokenExpiration = jwtProperties.refreshTokenExpiration();
 	}
@@ -71,10 +72,7 @@ public class JwtProvider {
 
 	private Claims parseClaims(String token) {
 		try {
-			return Jwts.parser()
-				.verifyWith(secretKey)
-				.build()
-				.parseSignedClaims(token)   // 서명, 만료 검증
+			return jwtParser.parseSignedClaims(token)
 				.getPayload();
 		} catch (ExpiredJwtException e) {
 			throw new BusinessException(AuthErrorCode.EXPIRED_TOKEN);
