@@ -84,6 +84,10 @@ public class Post extends BaseEntity {
         this.content = content;
     }
 
+    public boolean isWrittenBy(Long memberId) {
+        return member.getId().equals(memberId);
+    }
+
     private void validateTitle(String title) {
         if (title == null || title.isBlank()) {
             throw new BusinessException(PostErrorCode.EMPTY_TITLE);

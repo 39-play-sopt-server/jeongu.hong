@@ -59,18 +59,27 @@ public interface PostApi {
 
     @Operation(summary = "게시물 수정 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
+        @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청 값입니다.(400)"),
+        @ApiResponse(responseCode = "401", description = "인증이 필요합니다.(401)"),
+        @ApiResponse(responseCode = "403", description = "게시글 작성자만 수정/삭제할 수 있습니다.(P011)"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
     })
     @PutMapping(path = "/{postId}")
-    ResponseEntity<BaseResponse<Void>> updatePost(@PathVariable Long postId, @RequestBody @Valid PostUpdateRequest request);
+    ResponseEntity<BaseResponse<Void>> updatePost(
+        @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
+        @PathVariable Long postId,
+        @RequestBody @Valid PostUpdateRequest request);
 
     @Operation(summary = "게시물 삭제 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
+        @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
+        @ApiResponse(responseCode = "401", description = "인증이 필요합니다.(401)"),
+        @ApiResponse(responseCode = "403", description = "게시글 작성자만 수정/삭제할 수 있습니다.(P011)"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.(P003)")
     })
     @DeleteMapping(path = "/{postId}")
-    ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long postId);
+    ResponseEntity<BaseResponse<Void>> deletePost(
+        @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
+        @PathVariable Long postId);
 }

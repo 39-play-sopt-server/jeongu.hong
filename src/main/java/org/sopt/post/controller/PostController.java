@@ -43,16 +43,16 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Void>> updatePost(Long postId, PostUpdateRequest request) {
-        postService.updatePost(postId, request);
+    public ResponseEntity<BaseResponse<Void>> updatePost(AuthMember authMember, Long postId, PostUpdateRequest request) {
+        postService.updatePost(authMember.memberId(), postId, request);
         return ResponseEntity.status(PostSuccessCode.POST_UPDATED.getHttpStatus())
-                .body(BaseResponse.success(PostSuccessCode.POST_UPDATED));
+            .body(BaseResponse.success(PostSuccessCode.POST_UPDATED));
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Void>> deletePost(Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<BaseResponse<Void>> deletePost(AuthMember authMember, Long postId) {
+        postService.deletePost(authMember.memberId(), postId);
         return ResponseEntity.status(PostSuccessCode.POST_DELETED.getHttpStatus())
-                .body(BaseResponse.success(PostSuccessCode.POST_DELETED));
+            .body(BaseResponse.success(PostSuccessCode.POST_DELETED));
     }
 }
