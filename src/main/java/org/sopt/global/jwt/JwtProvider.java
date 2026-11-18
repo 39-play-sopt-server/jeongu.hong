@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
+import org.sopt.global.security.TokenClaims;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -54,20 +55,20 @@ public class JwtProvider {
 			.compact();
 	}
 
-	public Long getMemberIdFromAccessToken(String token) {
-		return getMemberId(token, TokenType.ACCESS);
+	public TokenClaims verifyAccessToken(String token) {
+		return verify(token, TokenType.ACCESS);
 	}
 
-	public Long getMemberIdFromRefreshToken(String token) {
-		return getMemberId(token, TokenType.REFRESH);
+	public TokenClaims verifyRefreshToken(String token) {
+		return verify(token, TokenType.REFRESH);
 	}
 
-	private Long getMemberId(String token, TokenType expectedType) {
+	private TokenClaims verify(String token, TokenType expectedType) {
 		Claims claims = parseClaims(token);
 		if (!expectedType.matches(claims.get(TOKEN_TYPE_CLAIM, String.class))) {
 			throw new BusinessException(AuthErrorCode.INVALID_TOKEN);
 		}
-		return Long.valueOf(claims.getSubject());
+		return toTokenClaims(claims);
 	}
 
 	private Claims parseClaims(String token) {
@@ -79,5 +80,13 @@ public class JwtProvider {
 		} catch (JwtException | IllegalArgumentException e) {
 			throw new BusinessException(AuthErrorCode.INVALID_TOKEN);
 		}
+	}
+
+	private TokenClaims toTokenClaims(Claims claims) {
+		return new TokenClaims(
+			Long.valueOf(claims.getSubject()),
+			claims.getId(),
+			claims.getExpiration().toInstant()
+		);
 	}
 }

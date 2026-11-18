@@ -73,7 +73,7 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        Long memberId = jwtProvider.getMemberIdFromRefreshToken(refreshToken);
+        Long memberId = jwtProvider.verifyRefreshToken(refreshToken).memberId();
         RefreshToken saved = refreshTokenRepository.findByMemberId(memberId)
             .orElseThrow(() -> new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
