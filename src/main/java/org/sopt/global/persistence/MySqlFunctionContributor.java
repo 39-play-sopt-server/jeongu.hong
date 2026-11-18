@@ -1,4 +1,4 @@
-package org.sopt.global.config;
+package org.sopt.global.persistence;
 
 import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.boot.model.FunctionContributor;

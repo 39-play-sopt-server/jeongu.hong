@@ -1,4 +1,4 @@
-package org.sopt.global.jwt;
+package org.sopt.global.auth.cookie;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

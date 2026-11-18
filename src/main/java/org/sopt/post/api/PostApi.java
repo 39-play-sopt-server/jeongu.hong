@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.sopt.global.response.BaseResponse;
 import org.sopt.global.response.PageResponse;
-import org.sopt.global.security.AuthMember;
+import org.sopt.global.auth.AuthMember;
 import org.sopt.post.domain.Category;
 import org.sopt.post.dto.request.PostCreateRequest;
 import org.sopt.post.dto.request.PostUpdateRequest;

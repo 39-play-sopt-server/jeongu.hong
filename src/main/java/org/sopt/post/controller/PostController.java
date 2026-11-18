@@ -2,7 +2,7 @@ package org.sopt.post.controller;
 
 import org.sopt.global.response.BaseResponse;
 import org.sopt.global.response.PageResponse;
-import org.sopt.global.security.AuthMember;
+import org.sopt.global.auth.AuthMember;
 import org.sopt.post.api.PostApi;
 import org.sopt.post.code.PostSuccessCode;
 import org.sopt.post.domain.Category;

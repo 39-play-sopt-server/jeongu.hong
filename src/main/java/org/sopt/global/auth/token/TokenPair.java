@@ -1,4 +1,4 @@
-package org.sopt.global.jwt;
+package org.sopt.global.auth.token;
 
 public record TokenPair(String accessToken, String refreshToken) {
 }

@@ -1,8 +1,8 @@
 package org.sopt.member.controller;
 
-import org.sopt.global.jwt.RefreshTokenCookieProvider;
+import org.sopt.global.auth.cookie.RefreshTokenCookieProvider;
 import org.sopt.global.response.BaseResponse;
-import org.sopt.global.security.AuthMember;
+import org.sopt.global.auth.AuthMember;
 import org.sopt.member.api.MemberApi;
 import org.sopt.member.code.MemberSuccessCode;
 import org.sopt.member.service.MemberService;

@@ -1,4 +1,4 @@
-package org.sopt.global.security;
+package org.sopt.global.auth.token;
 
 import java.time.Instant;
 

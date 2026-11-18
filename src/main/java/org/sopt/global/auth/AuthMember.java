@@ -1,4 +1,4 @@
-package org.sopt.global.security;
+package org.sopt.global.auth;
 
 public record AuthMember(Long memberId) {
 }

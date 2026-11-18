@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
-import org.sopt.global.jwt.JwtProperties;
-import org.sopt.global.jwt.TokenPair;
-import org.sopt.global.security.TokenIssuer;
-import org.sopt.global.security.TokenVerifier;
+import org.sopt.global.auth.SessionProperties;
+import org.sopt.global.auth.token.TokenPair;
+import org.sopt.global.auth.token.TokenIssuer;
+import org.sopt.global.auth.token.TokenVerifier;
 import org.sopt.member.code.MemberErrorCode;
 import org.sopt.member.domain.Member;
 import org.sopt.member.domain.RefreshToken;
@@ -30,7 +30,7 @@ public class AuthService {
     private final TokenVerifier tokenVerifier;
     private final TokenIssuer tokenIssuer;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtProperties jwtProperties;
+    private final SessionProperties sessionProperties;
 
     @Transactional
     public Long signup(MemberCreateRequest request) {
@@ -58,7 +58,7 @@ public class AuthService {
     private TokenPair startNewSession(Long memberId) {
         String accessToken = tokenIssuer.issueAccessToken(memberId);
         String refreshToken = tokenIssuer.issueRefreshToken(memberId);
-        LocalDateTime sessionExpiresAt = LocalDateTime.now().plus(jwtProperties.refreshTokenMaxLifetime());
+        LocalDateTime sessionExpiresAt = LocalDateTime.now().plus(sessionProperties.maxLifetime());
 
         refreshTokenRepository.findByMemberId(memberId)
             .ifPresentOrElse(

@@ -1,6 +1,6 @@
-package org.sopt.global.security;
+package org.sopt.global.auth.web;
 
-import static org.sopt.global.security.TokenAuthenticationFilter.*;
+import static org.sopt.global.auth.web.TokenAuthenticationFilter.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,11 +18,11 @@ import java.nio.charset.StandardCharsets;
 
 // 인증 실패 시 401 + 공통 응답(BaseResponse) 형식으로 응답
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class TokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 
-    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+    public TokenAuthenticationEntryPoint(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

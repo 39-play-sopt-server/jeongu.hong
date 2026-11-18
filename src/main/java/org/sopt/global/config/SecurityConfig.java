@@ -1,9 +1,9 @@
 package org.sopt.global.config;
 
-import org.sopt.global.security.BearerTokenResolver;
-import org.sopt.global.security.TokenAuthenticationFilter;
-import org.sopt.global.security.JwtAuthenticationEntryPoint;
-import org.sopt.global.security.TokenVerifier;
+import org.sopt.global.auth.web.BearerTokenResolver;
+import org.sopt.global.auth.web.TokenAuthenticationFilter;
+import org.sopt.global.auth.web.TokenAuthenticationEntryPoint;
+import org.sopt.global.auth.token.TokenVerifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,7 +37,7 @@ public class SecurityConfig {
 
 	private final TokenVerifier tokenVerifier;
 	private final BearerTokenResolver bearerTokenResolver;
-	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+	private final TokenAuthenticationEntryPoint authenticationEntryPoint;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

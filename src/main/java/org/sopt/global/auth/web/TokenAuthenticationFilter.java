@@ -1,4 +1,4 @@
-package org.sopt.global.security;
+package org.sopt.global.auth.web;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import org.sopt.global.auth.AuthMember;
+import org.sopt.global.auth.token.TokenVerifier;
 import org.sopt.global.error.BusinessException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

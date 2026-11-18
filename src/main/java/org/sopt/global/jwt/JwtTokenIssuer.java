@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
-import org.sopt.global.security.TokenIssuer;
+import org.sopt.global.auth.token.TokenIssuer;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;

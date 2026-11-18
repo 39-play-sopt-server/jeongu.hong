@@ -2,8 +2,8 @@ package org.sopt.global.jwt;
 
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
-import org.sopt.global.security.TokenClaims;
-import org.sopt.global.security.TokenVerifier;
+import org.sopt.global.auth.token.TokenClaims;
+import org.sopt.global.auth.token.TokenVerifier;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;

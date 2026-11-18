@@ -9,9 +9,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import org.sopt.global.jwt.RefreshTokenCookieProvider;
+import org.sopt.global.auth.cookie.RefreshTokenCookieProvider;
 import org.sopt.global.response.BaseResponse;
-import org.sopt.global.security.AuthMember;
+import org.sopt.global.auth.AuthMember;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
 import org.springframework.http.ResponseEntity;
