@@ -1,5 +1,6 @@
 package org.sopt.global.config;
 
+import org.sopt.global.auth.token.TokenBlacklist;
 import org.sopt.global.auth.web.BearerTokenResolver;
 import org.sopt.global.auth.web.TokenAuthenticationFilter;
 import org.sopt.global.auth.web.TokenAuthenticationEntryPoint;
@@ -37,6 +38,7 @@ public class SecurityConfig {
 
 	private final TokenVerifier tokenVerifier;
 	private final BearerTokenResolver bearerTokenResolver;
+	private final TokenBlacklist tokenBlacklist;
 	private final TokenAuthenticationEntryPoint authenticationEntryPoint;
 
 	@Bean
@@ -62,7 +64,7 @@ public class SecurityConfig {
 			.exceptionHandling(e -> e
 				.authenticationEntryPoint(authenticationEntryPoint))
 			// JWT 인증 필터 추가
-			.addFilterBefore(new TokenAuthenticationFilter(tokenVerifier, bearerTokenResolver),
+			.addFilterBefore(new TokenAuthenticationFilter(tokenVerifier, bearerTokenResolver, tokenBlacklist),
 				UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
