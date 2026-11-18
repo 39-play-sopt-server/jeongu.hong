@@ -36,7 +36,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private void authenticate(String token, HttpServletRequest request) {
         try {
-            AuthMember authMember = new AuthMember(tokenVerifier.verifyAccessToken(token).memberId());
+            AuthMember authMember = AuthMember.from(tokenVerifier.verifyAccessToken(token));
 
             UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(authMember, null, List.of());
