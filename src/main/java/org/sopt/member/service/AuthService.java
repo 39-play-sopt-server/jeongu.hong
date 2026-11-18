@@ -40,7 +40,7 @@ public class AuthService {
         return memberRepository.save(member).getId();
     }
 
-    @Transactional                       // readOnly 제거!
+    @Transactional
     public TokenPair login(LoginRequest request) {
         Member member = memberRepository.findByEmail(request.email())
             .filter(m -> !m.isDeleted())
@@ -97,5 +97,10 @@ public class AuthService {
         saved.rotate(newRefreshToken);
 
         return new TokenPair(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
+    public void logout(Long memberId) {
+        refreshTokenRepository.deleteByMemberId(memberId);
     }
 }

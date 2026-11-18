@@ -3,6 +3,7 @@ package org.sopt.member.controller;
 import org.sopt.global.jwt.RefreshTokenCookieProvider;
 import org.sopt.global.jwt.TokenPair;
 import org.sopt.global.response.BaseResponse;
+import org.sopt.global.security.AuthMember;
 import org.sopt.member.api.AuthApi;
 import org.sopt.member.code.MemberSuccessCode;
 import org.sopt.member.dto.request.LoginRequest;
@@ -41,6 +42,14 @@ public class AuthController implements AuthApi {
         return ResponseEntity.status(MemberSuccessCode.TOKEN_REISSUED.getHttpStatus())
             .headers(createTokenHeaders(tokens))
             .body(BaseResponse.success(MemberSuccessCode.TOKEN_REISSUED));
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> logout(AuthMember authMember) {
+        authService.logout(authMember.memberId());
+        return ResponseEntity.status(MemberSuccessCode.LOGOUT_SUCCESS.getHttpStatus())
+            .header(HttpHeaders.SET_COOKIE, refreshTokenCookieProvider.delete().toString())
+            .body(BaseResponse.success(MemberSuccessCode.LOGOUT_SUCCESS));
     }
 
     private HttpHeaders createTokenHeaders(TokenPair tokens) {

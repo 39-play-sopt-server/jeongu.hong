@@ -4,15 +4,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.sopt.global.jwt.RefreshTokenCookieProvider;
 import org.sopt.global.response.BaseResponse;
+import org.sopt.global.security.AuthMember;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,4 +55,15 @@ public interface AuthApi {
     ResponseEntity<BaseResponse<Void>> reissue(
         @Parameter(hidden = true)
         @CookieValue(name = RefreshTokenCookieProvider.COOKIE_NAME, required = false) String refreshToken);
+
+    @Operation(summary = "로그아웃 API",
+        description = "서버의 Refresh Token 세션을 삭제하고 refreshToken 쿠키를 만료시킵니다.")
+    @SecurityRequirement(name = "JWT")   // 클래스의 @SecurityRequirements(토큰 없음)를 이 메서드만 덮어씀
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "로그아웃 성공 (refreshToken 쿠키 삭제)"),
+        @ApiResponse(responseCode = "401", description = "인증 필요(401), 만료(A001), 위조(A002)")
+    })
+    @PostMapping("/logout")
+    ResponseEntity<BaseResponse<Void>> logout(
+        @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember);
 }
