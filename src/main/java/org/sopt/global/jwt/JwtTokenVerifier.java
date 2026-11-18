@@ -3,6 +3,7 @@ package org.sopt.global.jwt;
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.security.TokenClaims;
+import org.sopt.global.security.TokenVerifier;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -11,18 +12,20 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 
 @Component
-public class JwtProvider {
+public class JwtTokenVerifier implements TokenVerifier {
 
 	private final JwtParser jwtParser;
 
-	public JwtProvider(JwtParser jwtParser) {
+	public JwtTokenVerifier(JwtParser jwtParser) {
 		this.jwtParser = jwtParser;
 	}
 
+	@Override
 	public TokenClaims verifyAccessToken(String token) {
 		return verify(token, TokenType.ACCESS);
 	}
 
+	@Override
 	public TokenClaims verifyRefreshToken(String token) {
 		return verify(token, TokenType.REFRESH);
 	}

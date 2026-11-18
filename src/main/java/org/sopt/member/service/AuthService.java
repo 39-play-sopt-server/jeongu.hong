@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
 import org.sopt.global.jwt.JwtProperties;
-import org.sopt.global.jwt.JwtProvider;
 import org.sopt.global.jwt.TokenPair;
 import org.sopt.global.security.TokenIssuer;
+import org.sopt.global.security.TokenVerifier;
 import org.sopt.member.code.MemberErrorCode;
 import org.sopt.member.domain.Member;
 import org.sopt.member.domain.RefreshToken;
@@ -27,7 +27,7 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
+    private final TokenVerifier tokenVerifier;
     private final TokenIssuer tokenIssuer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
@@ -75,7 +75,7 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        Long memberId = jwtProvider.verifyRefreshToken(refreshToken).memberId();
+        Long memberId = tokenVerifier.verifyRefreshToken(refreshToken).memberId();
         RefreshToken saved = refreshTokenRepository.findByMemberId(memberId)
             .orElseThrow(() -> new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
 

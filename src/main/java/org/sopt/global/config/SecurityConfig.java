@@ -1,8 +1,8 @@
 package org.sopt.global.config;
 
 import org.sopt.global.jwt.JwtAuthenticationFilter;
-import org.sopt.global.jwt.JwtProvider;
 import org.sopt.global.security.JwtAuthenticationEntryPoint;
+import org.sopt.global.security.TokenVerifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,8 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
 	private static final String[] SWAGGER_URLS = {
@@ -31,13 +34,8 @@ public class SecurityConfig {
 		"/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/auth/reissue"
 	};
 
-	private final JwtProvider jwtProvider;
+	private final TokenVerifier tokenVerifier;
 	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-
-	public SecurityConfig(JwtProvider jwtProvider, JwtAuthenticationEntryPoint authenticationEntryPoint) {
-		this.jwtProvider = jwtProvider;
-		this.authenticationEntryPoint = authenticationEntryPoint;
-	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -62,7 +60,7 @@ public class SecurityConfig {
 			.exceptionHandling(e -> e
 				.authenticationEntryPoint(authenticationEntryPoint))
 			// JWT 인증 필터 추가
-			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
+			.addFilterBefore(new JwtAuthenticationFilter(tokenVerifier),
 				UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
