@@ -1,6 +1,7 @@
 package org.sopt.global.config;
 
-import org.sopt.global.jwt.JwtAuthenticationFilter;
+import org.sopt.global.security.BearerTokenResolver;
+import org.sopt.global.security.TokenAuthenticationFilter;
 import org.sopt.global.security.JwtAuthenticationEntryPoint;
 import org.sopt.global.security.TokenVerifier;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,7 @@ public class SecurityConfig {
 	};
 
 	private final TokenVerifier tokenVerifier;
+	private final BearerTokenResolver bearerTokenResolver;
 	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
 	@Bean
@@ -60,7 +62,7 @@ public class SecurityConfig {
 			.exceptionHandling(e -> e
 				.authenticationEntryPoint(authenticationEntryPoint))
 			// JWT 인증 필터 추가
-			.addFilterBefore(new JwtAuthenticationFilter(tokenVerifier),
+			.addFilterBefore(new TokenAuthenticationFilter(tokenVerifier, bearerTokenResolver),
 				UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}

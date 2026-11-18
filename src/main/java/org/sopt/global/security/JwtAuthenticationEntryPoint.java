@@ -1,6 +1,6 @@
 package org.sopt.global.security;
 
-import static org.sopt.global.jwt.JwtAuthenticationFilter.*;
+import static org.sopt.global.security.TokenAuthenticationFilter.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
