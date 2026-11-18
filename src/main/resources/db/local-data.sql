@@ -2,9 +2,9 @@
 -- password는 'password1234'를 BCrypt로 해싱한 값
 -- created_at / updated_at은 JPA Auditing을 거치지 않으므로 직접 넣는다.
 
-INSERT INTO member (name, email, password, deleted_at, created_at, updated_at) VALUES
-    ('홍길동', 'hong@sopt.org', '$2y$10$7ScMCOnbx5fMrjdlNh.I2.DfV6RbUZU2dtzb3ThhV4GTnUJUQwFuC', NULL, '2026-09-01 10:00:00', '2026-09-01 10:00:00'),
-    ('김솝트', 'kim@sopt.org',  '$2y$10$7ScMCOnbx5fMrjdlNh.I2.DfV6RbUZU2dtzb3ThhV4GTnUJUQwFuC', NULL, '2026-09-02 10:00:00', '2026-09-02 10:00:00');
+INSERT INTO member (name, email, password, role, deleted_at, created_at, updated_at) VALUES
+    ('홍길동', 'hong@sopt.org', '$2y$10$7ScMCOnbx5fMrjdlNh.I2.DfV6RbUZU2dtzb3ThhV4GTnUJUQwFuC', 'ADMIN', NULL, '2026-09-01 10:00:00', '2026-09-01 10:00:00'),
+    ('김솝트', 'kim@sopt.org',  '$2y$10$7ScMCOnbx5fMrjdlNh.I2.DfV6RbUZU2dtzb3ThhV4GTnUJUQwFuC', 'USER',  NULL, '2026-09-02 10:00:00', '2026-09-02 10:00:00');
 
 -- 총 25개 (SOPT 9 / PLAY 8 / DANCE 8), 제목에 '스프링' 포함 7개 (SOPT 6 / PLAY 1)
 INSERT INTO post (title, content, category, view_count, like_count, member_id, created_at, updated_at) VALUES
