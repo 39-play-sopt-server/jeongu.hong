@@ -22,10 +22,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -41,6 +40,10 @@ public class Member extends BaseEntity {
         this.role = Role.USER;
     }
 
+    public static Member createSocialMember(String name) {
+        return new Member(name, null, null);
+    }
+
     public String getDisplayName() {
         return isDeleted() ? "탈퇴한 회원" : name;
     }
@@ -51,5 +54,9 @@ public class Member extends BaseEntity {
 
     public boolean isDeleted() {
         return deletedAt != null;
+    }
+
+    public boolean hasPassword() {
+        return password != null;
     }
 }

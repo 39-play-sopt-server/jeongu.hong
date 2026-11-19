@@ -52,7 +52,7 @@ public class AuthService {
             .filter(m -> !m.isDeleted())
             .orElseThrow(() -> new BusinessException(MemberErrorCode.INVALID_CREDENTIALS));
 
-        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
+        if (!member.hasPassword() || !passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new BusinessException(MemberErrorCode.INVALID_CREDENTIALS);
         }
 
