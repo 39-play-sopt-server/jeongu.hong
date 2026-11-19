@@ -52,6 +52,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // HTTP 클라이언트 (소셜 로그인 API 호출)
+    implementation 'org.springframework.boot:spring-boot-starter-restclient'
 }
 
 test {
