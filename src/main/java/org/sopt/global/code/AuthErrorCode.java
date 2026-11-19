@@ -9,7 +9,8 @@ public enum AuthErrorCode implements ErrorCode {
 	REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "A003", "Refresh Token이 존재하지 않습니다."),
 	REFRESH_TOKEN_REUSED(HttpStatus.UNAUTHORIZED, "A004", "이미 사용된 Refresh Token입니다. 다시 로그인해주세요."),
 	SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, "A005", "로그인 세션이 만료되었습니다. 다시 로그인해주세요."),
-	REVOKED_TOKEN(HttpStatus.UNAUTHORIZED, "A006", "무효화된 토큰입니다. 다시 로그인해주세요.");;
+	REVOKED_TOKEN(HttpStatus.UNAUTHORIZED, "A006", "무효화된 토큰입니다. 다시 로그인해주세요."),
+	UNSUPPORTED_SOCIAL_PROVIDER(HttpStatus.BAD_REQUEST, "A007", "지원하지 않는 소셜 로그인입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
