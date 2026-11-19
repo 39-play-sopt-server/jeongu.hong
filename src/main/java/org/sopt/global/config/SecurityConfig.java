@@ -35,7 +35,8 @@ public class SecurityConfig {
 		"/api/v1/posts", "/api/v1/posts/*"
 	};
 	private static final String[] PUBLIC_POST_URLS = {
-		"/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/auth/reissue"
+		"/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/auth/reissue",
+		"/api/v1/auth/oauth/*"
 	};
 
 	private static final String ADMIN_URLS = "/api/v1/admin/**";

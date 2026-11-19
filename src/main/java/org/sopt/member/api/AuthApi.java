@@ -14,9 +14,11 @@ import org.sopt.global.response.BaseResponse;
 import org.sopt.global.auth.AuthMember;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
+import org.sopt.member.dto.request.OAuthLoginRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,19 @@ public interface AuthApi {
     })
     @PostMapping("/login")
     ResponseEntity<BaseResponse<Void>> login(@RequestBody @Valid LoginRequest request);
+
+    @Operation(summary = "소셜 로그인 API",
+        description = "소셜 플랫폼에서 받은 인가 코드(code)로 로그인합니다. 처음이면 자동으로 가입됩니다. 응답 형식은 일반 로그인과 같습니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "로그인 성공 (Authorization 헤더 + refreshToken 쿠키)"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청 값(400), 지원하지 않는 소셜 로그인(A007)"),
+        @ApiResponse(responseCode = "401", description = "소셜 인증 실패 - 만료·재사용된 code 등(A008)"),
+        @ApiResponse(responseCode = "502", description = "소셜 로그인 서버 통신 실패(A009)")
+    })
+    @PostMapping("/oauth/{provider}")
+    ResponseEntity<BaseResponse<Void>> socialLogin(
+        @PathVariable String provider,
+        @RequestBody @Valid OAuthLoginRequest request);
 
     @Operation(summary = "토큰 재발급 API",
         description = "refreshToken 쿠키로 Access/Refresh Token을 재발급합니다. 응답 형식은 로그인과 같습니다.")

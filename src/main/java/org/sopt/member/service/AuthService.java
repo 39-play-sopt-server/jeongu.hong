@@ -11,13 +11,16 @@ import org.sopt.global.auth.SessionProperties;
 import org.sopt.global.auth.token.TokenPair;
 import org.sopt.global.auth.token.TokenIssuer;
 import org.sopt.global.auth.token.TokenVerifier;
+import org.sopt.global.oauth.OAuthUserInfo;
 import org.sopt.member.code.MemberErrorCode;
 import org.sopt.member.domain.Member;
 import org.sopt.member.domain.RefreshToken;
+import org.sopt.member.domain.SocialAccount;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
 import org.sopt.member.repository.MemberRepository;
 import org.sopt.member.repository.RefreshTokenRepository;
+import org.sopt.member.repository.SocialAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +38,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final SessionProperties sessionProperties;
     private final TokenBlacklist tokenBlacklist;
+    private final SocialAccountRepository socialAccountRepository;
 
     @Transactional
     public Long signup(MemberCreateRequest request) {
@@ -56,6 +60,23 @@ public class AuthService {
             throw new BusinessException(MemberErrorCode.INVALID_CREDENTIALS);
         }
 
+        return startNewSession(member);
+    }
+
+    @Transactional
+    public TokenPair loginWithSocial(OAuthUserInfo userInfo) {
+        Optional<SocialAccount> account =
+            socialAccountRepository.findByProviderAndProviderId(userInfo.provider(), userInfo.providerId());
+
+        if (account.isPresent() && !account.get().getMember().isDeleted()) {
+            return startNewSession(account.get().getMember());
+        }
+
+        Member member = memberRepository.save(Member.createSocialMember(userInfo.nickname()));
+        account.ifPresentOrElse(
+            withdrawn -> withdrawn.linkTo(member),
+            () -> socialAccountRepository.save(SocialAccount.create(member, userInfo.provider(), userInfo.providerId()))
+        );
         return startNewSession(member);
     }
 

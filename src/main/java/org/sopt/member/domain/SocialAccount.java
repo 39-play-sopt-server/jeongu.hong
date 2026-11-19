@@ -51,4 +51,8 @@ public class SocialAccount extends BaseEntity {
 	public static SocialAccount create(Member member, SocialProvider provider, String providerId) {
 		return new SocialAccount(member, provider, providerId);
 	}
+
+	public void linkTo(Member member) {
+		this.member = member;
+	}
 }
