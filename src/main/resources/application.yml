@@ -4,7 +4,24 @@ cors:
 
 jwt:
   secret: ${JWT_SECRET}
-  access-token-expiration: 1800000 # 30분 (ms)
+  access-token-expiration: 30m
+  refresh-token-expiration: 14d
+
+auth:
+  session:
+    max-lifetime: 30d
+
+cookie:
+  secure: ${COOKIE_SECURE:true}
+  same-site: Strict
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID:}
+    client-secret: ${KAKAO_CLIENT_SECRET:}
+    redirect-uri: ${KAKAO_REDIRECT_URI:}
+    token-uri: https://kauth.kakao.com/oauth/token
+    user-info-uri: https://kapi.kakao.com/v2/user/me
 
 springdoc:
   packages-to-scan: org.sopt
@@ -56,6 +73,14 @@ spring:
         default-page-size: 20
         max-page-size: 200
         one-indexed-parameters: true
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 500ms
+      connect-timeout: 1s
+      repositories:
+        enabled: false
+
   jackson:
     datatype:
       enum:

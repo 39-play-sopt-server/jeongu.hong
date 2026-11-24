@@ -1,29 +1,44 @@
 package org.sopt.member.service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.sopt.global.auth.AuthMember;
+import org.sopt.global.auth.token.TokenBlacklist;
+import org.sopt.global.code.AuthErrorCode;
 import org.sopt.global.error.BusinessException;
-import org.sopt.global.jwt.JwtProvider;
+import org.sopt.global.auth.SessionProperties;
+import org.sopt.global.auth.token.TokenPair;
+import org.sopt.global.auth.token.TokenIssuer;
+import org.sopt.global.auth.token.TokenVerifier;
+import org.sopt.global.oauth.OAuthUserInfo;
 import org.sopt.member.code.MemberErrorCode;
 import org.sopt.member.domain.Member;
+import org.sopt.member.domain.RefreshToken;
+import org.sopt.member.domain.SocialAccount;
 import org.sopt.member.dto.request.LoginRequest;
 import org.sopt.member.dto.request.MemberCreateRequest;
-import org.sopt.member.dto.response.LoginResponse;
 import org.sopt.member.repository.MemberRepository;
+import org.sopt.member.repository.RefreshTokenRepository;
+import org.sopt.member.repository.SocialAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
-
-    public AuthService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtProvider = jwtProvider;
-    }
+    private final TokenVerifier tokenVerifier;
+    private final TokenIssuer tokenIssuer;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final SessionProperties sessionProperties;
+    private final TokenBlacklist tokenBlacklist;
+    private final SocialAccountRepository socialAccountRepository;
 
     @Transactional
     public Long signup(MemberCreateRequest request) {
@@ -35,17 +50,87 @@ public class AuthService {
         return memberRepository.save(member).getId();
     }
 
-    @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest request) {
-        // 이메일이 없는 경우와 비밀번호가 틀린 경우를 같은 에러로 응답 (가입 여부 노출 방지)
+    @Transactional
+    public TokenPair login(LoginRequest request) {
         Member member = memberRepository.findByEmail(request.email())
-                .filter(m -> !m.isDeleted())
-                .orElseThrow(() -> new BusinessException(MemberErrorCode.INVALID_CREDENTIALS));
+            .filter(m -> !m.isDeleted())
+            .orElseThrow(() -> new BusinessException(MemberErrorCode.INVALID_CREDENTIALS));
 
-        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
+        if (!member.hasPassword() || !passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new BusinessException(MemberErrorCode.INVALID_CREDENTIALS);
         }
 
-        return new LoginResponse(jwtProvider.createAccessToken(member.getId()));
+        return startNewSession(member);
+    }
+
+    @Transactional
+    public TokenPair loginWithSocial(OAuthUserInfo userInfo) {
+        Optional<SocialAccount> account =
+            socialAccountRepository.findByProviderAndProviderId(userInfo.provider(), userInfo.providerId());
+
+        if (account.isPresent() && !account.get().getMember().isDeleted()) {
+            return startNewSession(account.get().getMember());
+        }
+
+        Member member = memberRepository.save(Member.createSocialMember(userInfo.nickname()));
+        account.ifPresentOrElse(
+            withdrawn -> withdrawn.linkTo(member),
+            () -> socialAccountRepository.save(SocialAccount.create(member, userInfo.provider(), userInfo.providerId()))
+        );
+        return startNewSession(member);
+    }
+
+    private TokenPair startNewSession(Member member) {
+        Long memberId = member.getId();
+        String accessToken = tokenIssuer.issueAccessToken(memberId, member.getRole());
+        String refreshToken = tokenIssuer.issueRefreshToken(memberId);
+        LocalDateTime sessionExpiresAt = LocalDateTime.now().plus(sessionProperties.maxLifetime());
+
+        refreshTokenRepository.findByMemberId(memberId)
+            .ifPresentOrElse(
+                saved -> saved.renew(refreshToken, sessionExpiresAt),
+                () -> refreshTokenRepository.save(RefreshToken.create(memberId, refreshToken, sessionExpiresAt))
+            );
+
+        return new TokenPair(accessToken, refreshToken);
+    }
+
+    @Transactional(noRollbackFor = BusinessException.class)
+    public TokenPair reissue(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        Long memberId = tokenVerifier.verifyRefreshToken(refreshToken).memberId();
+        RefreshToken saved = refreshTokenRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (!saved.matches(refreshToken)) {
+            refreshTokenRepository.delete(saved);
+            throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_REUSED);
+        }
+
+        if (saved.isSessionExpired(LocalDateTime.now())) {
+            refreshTokenRepository.delete(saved);
+            throw new BusinessException(AuthErrorCode.SESSION_EXPIRED);
+        }
+
+        Optional<Member> member = memberRepository.findByIdAndDeletedAtIsNull(memberId);
+        if (member.isEmpty()) {
+            refreshTokenRepository.delete(saved);
+            throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        String newAccessToken = tokenIssuer.issueAccessToken(memberId, member.get().getRole());
+        String newRefreshToken = tokenIssuer.issueRefreshToken(memberId);
+        saved.rotate(newRefreshToken);
+
+        return new TokenPair(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
+    public void logout(AuthMember authMember) {
+        refreshTokenRepository.deleteByMemberId(authMember.memberId());
+        tokenBlacklist.add(authMember.tokenId(), authMember.tokenExpiresAt());
     }
 }

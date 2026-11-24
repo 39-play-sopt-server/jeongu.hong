@@ -1,6 +1,7 @@
 package org.sopt.post.controller;
 
 import org.sopt.global.response.BaseResponse;
+import org.sopt.global.auth.AuthMember;
 import org.sopt.post.api.PostLikeApi;
 import org.sopt.post.code.PostSuccessCode;
 import org.sopt.post.service.PostLikeService;
@@ -17,14 +18,16 @@ public class PostLikeController implements PostLikeApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Void>> likePost(Long memberId, Long postId) {
-        postLikeService.likePost(memberId, postId);
-        return BaseResponse.success(PostSuccessCode.POST_LIKED);
+    public ResponseEntity<BaseResponse<Void>> likePost(AuthMember authMember, Long postId) {
+        postLikeService.likePost(authMember.memberId(), postId);
+        return ResponseEntity.status(PostSuccessCode.POST_LIKED.getHttpStatus())
+                .body(BaseResponse.success(PostSuccessCode.POST_LIKED));
     }
 
     @Override
-    public ResponseEntity<BaseResponse<Void>> unlikePost(Long memberId, Long postId) {
-        postLikeService.unlikePost(memberId, postId);
-        return BaseResponse.success(PostSuccessCode.POST_UNLIKED);
+    public ResponseEntity<BaseResponse<Void>> unlikePost(AuthMember authMember, Long postId) {
+        postLikeService.unlikePost(authMember.memberId(), postId);
+        return ResponseEntity.status(PostSuccessCode.POST_UNLIKED.getHttpStatus())
+                .body(BaseResponse.success(PostSuccessCode.POST_UNLIKED));
     }
 }

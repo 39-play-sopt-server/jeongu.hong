@@ -32,7 +32,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         } else {
             log.warn("[{}] {}", errorCode.getCode(), errorCode.getMessage());
         }
-        return BaseResponse.fail(e.getErrorCode());
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(BaseResponse.fail(errorCode));
     }
 
     // 요청 본문 검증 실패 (필드별 오류 메시지를 함께 응답)
@@ -72,6 +73,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Void>> handleException(Exception e) {
         log.error("예상치 못한 예외", e);
-        return BaseResponse.fail(GlobalErrorCode.INTERNAL_ERROR);
+        ErrorCode errorCode = GlobalErrorCode.INTERNAL_ERROR;
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(BaseResponse.fail(errorCode));
     }
 }

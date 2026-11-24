@@ -53,16 +53,18 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long id, PostUpdateRequest request) {
+    public void updatePost(Long memberId, Long id, PostUpdateRequest request) {
         Post post = findPost(id);
+        validateAuthor(post, memberId);
 
         post.update(request.title(), request.content());
     }
 
     @Transactional
-    public void deletePost(Long id) {
+    public void deletePost(Long memberId, Long id) {
         Post post = postRepository.findByIdForUpdate(id)
                         .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
+        validateAuthor(post, memberId);
 
         postLikeRepository.deleteAllByPostId(id);
         postRepository.delete(post);
@@ -71,5 +73,11 @@ public class PostService {
     private Post findPost(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(PostErrorCode.POST_NOT_FOUND));
+    }
+
+    private void validateAuthor(Post post, Long memberId) {
+        if (!post.isWrittenBy(memberId)) {
+            throw new BusinessException(PostErrorCode.NOT_POST_AUTHOR);
+        }
     }
 }
